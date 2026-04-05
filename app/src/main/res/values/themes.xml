@@ -7,20 +7,26 @@
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">80dp</item>
         <item name="android:layout_columnWeight">1</item>
-        <item name="android:layout_margin">6dp</item>
+        <item name="android:layout_margin">8dp</item>
         <item name="android:textSize">22sp</item>
         <item name="android:textColor">#333333</item>
         <item name="backgroundTint">#E0E0E0</item>
-        <item name="cornerRadius">16dp</item>
-    </style>
+        <item name="cornerRadius">28dp</item> </style>
 
     <style name="OperatorButtonStyle" parent="Widget.MaterialComponents.Button">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">80dp</item>
         <item name="android:layout_columnWeight">1</item>
-        <item name="android:layout_margin">6dp</item>
+        <item name="android:layout_margin">8dp</item>
         <item name="android:textSize">22sp</item>
         <item name="backgroundTint">#F57C00</item>
-        <item name="cornerRadius">16dp</item>
+        <item name="cornerRadius">28dp</item>
+    </style>
+
+    <style name="TopRowButtonStyle" parent="Widget.MaterialComponents.Button">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">65dp</item> <item name="android:layout_columnWeight">1</item>
+        <item name="android:layout_margin">10dp</item> <item name="android:textSize">18sp</item>
+        <item name="cornerRadius">28dp</item>
     </style>
 </resources>
