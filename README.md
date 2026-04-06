@@ -1,4 +1,4 @@
-# 📱 Modern Android Calculator
+# 📱 Android Calculator
 
 A sleek, minimalist, and high-performance calculator built with **Java** and **Material Design 3**. This app features a clean "Light-White" aesthetic with a responsive grid layout designed for both phones and tablets.
 
