@@ -12,8 +12,8 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
         android:layout_marginBottom="16dp"
+        android:layout_weight="1"
         app:cardBackgroundColor="#FFFFFF"
         app:cardCornerRadius="24dp"
         app:cardElevation="4dp">
@@ -21,8 +21,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
             android:gravity="bottom|end"
+            android:orientation="vertical"
             android:padding="20dp">
 
             <TextView
@@ -31,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:text=""
                 android:textColor="#757575"
-                android:textSize="22sp" />
+                android:textSize="30sp" />
 
             <TextView
                 android:id="@+id/tvDisplay"
@@ -39,7 +39,7 @@
                 android:layout_height="wrap_content"
                 android:text="0"
                 android:textColor="#212121"
-                android:textSize="56sp"
+                android:textSize="60sp"
                 android:textStyle="bold" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
@@ -49,36 +49,16 @@
         android:layout_height="wrap_content"
         android:columnCount="4">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnRoot"
-            style="@style/TopRowButtonStyle"
-            android:text="√"
-            app:backgroundTint="#BDBDBD"
-            android:textColor="#333333" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnPower"
-            style="@style/TopRowButtonStyle"
-            android:text="^"
-            app:backgroundTint="#BDBDBD"
-            android:textColor="#333333" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnAC"
-            style="@style/TopRowButtonStyle"
-            android:text="AC"
-            app:backgroundTint="#757575" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnBack"
-            style="@style/TopRowButtonStyle"
-            android:text="⌫"
-            app:backgroundTint="#E53935" />
+        <com.google.android.material.button.MaterialButton android:id="@+id/btnRoot" style="@style/TopRowButtonStyle" android:text="√" app:backgroundTint="#BDBDBD" android:textColor="#333333" />
+        <com.google.android.material.button.MaterialButton android:id="@+id/btnPower" style="@style/TopRowButtonStyle" android:text="^" app:backgroundTint="#BDBDBD" android:textColor="#333333" />
+        <com.google.android.material.button.MaterialButton android:id="@+id/btnAC" style="@style/TopRowButtonStyle" android:text="AC" app:backgroundTint="#757575" />
+        <com.google.android.material.button.MaterialButton android:id="@+id/btnBack" style="@style/TopRowButtonStyle" android:text="⌫" app:backgroundTint="#E53935" />
 
         <com.google.android.material.button.MaterialButton android:id="@+id/btn7" android:text="7" style="@style/NumericButtonStyle" />
         <com.google.android.material.button.MaterialButton android:id="@+id/btn8" android:text="8" style="@style/NumericButtonStyle" />
         <com.google.android.material.button.MaterialButton android:id="@+id/btn9" android:text="9" style="@style/NumericButtonStyle" />
-        <com.google.android.material.button.MaterialButton android:id="@+id/btnDivide" android:text="/" style="@style/OperatorButtonStyle" />
+        <com.google.android.material.button.MaterialButton android:id="@+id/btnDivide" android:text="÷" style="@style/OperatorButtonStyle" />
 
         <com.google.android.material.button.MaterialButton android:id="@+id/btn4" android:text="4" style="@style/NumericButtonStyle" />
         <com.google.android.material.button.MaterialButton android:id="@+id/btn5" android:text="5" style="@style/NumericButtonStyle" />
@@ -92,8 +72,8 @@
 
         <com.google.android.material.button.MaterialButton android:id="@+id/btnDot" android:text="." style="@style/NumericButtonStyle" />
         <com.google.android.material.button.MaterialButton android:id="@+id/btn0" android:text="0" style="@style/NumericButtonStyle" />
+        <com.google.android.material.button.MaterialButton android:id="@+id/btnPlus" android:text="+" style="@style/OperatorButtonStyle" android:layout_rowSpan="2" />
         <com.google.android.material.button.MaterialButton android:id="@+id/btnEquals" android:text="=" style="@style/NumericButtonStyle" app:backgroundTint="#4CAF50" android:textColor="#FFFFFF"/>
-        <com.google.android.material.button.MaterialButton android:id="@+id/btnPlus" android:text="+" style="@style/OperatorButtonStyle" />
 
     </GridLayout>
 </LinearLayout>
