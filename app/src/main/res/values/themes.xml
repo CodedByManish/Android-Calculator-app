@@ -1,32 +1,43 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <style name="Theme.MyCalculator" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <item name="android:statusBarColor">#F5F5F5</item>
+        <item name="android:statusBarColor">#F0F0F0</item>
     </style>
 
-    <style name="NumericButtonStyle" parent="Widget.MaterialComponents.Button">
+    <style name="BaseButtonStyle" parent="Widget.MaterialComponents.Button">
         <item name="android:layout_width">0dp</item>
-        <item name="android:layout_height">80dp</item>
+        <item name="android:layout_height">60dp</item>
         <item name="android:layout_columnWeight">1</item>
-        <item name="android:layout_margin">8dp</item>
-        <item name="android:textSize">22sp</item>
-        <item name="android:textColor">#333333</item>
-        <item name="backgroundTint">#E0E0E0</item>
-        <item name="cornerRadius">28dp</item> </style>
-
-    <style name="OperatorButtonStyle" parent="Widget.MaterialComponents.Button">
-        <item name="android:layout_width">0dp</item>
-        <item name="android:layout_height">80dp</item>
-        <item name="android:layout_columnWeight">1</item>
-        <item name="android:layout_margin">8dp</item>
-        <item name="android:textSize">22sp</item>
-        <item name="backgroundTint">#F57C00</item>
-        <item name="cornerRadius">28dp</item>
+        <item name="android:layout_margin">4dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="cornerRadius">16dp</item>
+        <item name="elevation">2dp</item>
     </style>
 
-    <style name="TopRowButtonStyle" parent="Widget.MaterialComponents.Button">
-        <item name="android:layout_width">0dp</item>
-        <item name="android:layout_height">65dp</item> <item name="android:layout_columnWeight">1</item>
-        <item name="android:layout_margin">10dp</item> <item name="android:textSize">18sp</item>
-        <item name="cornerRadius">20dp</item>
+    <style name="CalcBtn.Function" parent="BaseButtonStyle">
+        <item name="backgroundTint">@color/btn_function</item>
+        <item name="android:textColor">#0C5460</item>
+    </style>
+
+    <style name="CalcBtn.Operator" parent="BaseButtonStyle">
+        <item name="backgroundTint">@color/btn_operator</item>
+        <item name="android:textColor">#856404</item>
+    </style>
+
+    <style name="CalcBtn.Number" parent="BaseButtonStyle">
+        <item name="backgroundTint">#E9ECEF</item>
+        <item name="android:textColor">#495057</item>
+    </style>
+
+    <style name="CalcBtn.Clear" parent="BaseButtonStyle">
+        <item name="backgroundTint">@color/btn_clear</item>
+        <item name="android:textColor">#721C24</item>
+    </style>
+
+    <style name="CalcBtn.Equals" parent="BaseButtonStyle">
+        <item name="backgroundTint">@color/btn_equals</item>
+        <item name="android:textColor">#155724</item>
     </style>
 </resources>

@@ -1,79 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/bg_grey"
     android:orientation="vertical"
-    android:background="#F5F5F5"
-    android:padding="12dp"
-    tools:ignore="HardcodedText">
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:layout_marginBottom="8dp">
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="DEG" android:textSize="10sp" android:textStyle="bold"/>
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/modeToggle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="4dp"/>
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="RAD" android:textSize="10sp" android:textStyle="bold"/>
+    </LinearLayout>
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginBottom="16dp"
-        android:layout_weight="1"
-        app:cardBackgroundColor="#FFFFFF"
+        android:layout_height="180dp"
+        app:cardBackgroundColor="@color/display_bg"
         app:cardCornerRadius="24dp"
-        app:cardElevation="4dp">
-
+        app:cardElevation="0dp">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="bottom|end"
             android:orientation="vertical"
-            android:padding="20dp">
-
-            <TextView
-                android:id="@+id/tvEquation"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=""
-                android:textColor="#757575"
-                android:textSize="30sp" />
-
-            <TextView
-                android:id="@+id/tvDisplay"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0"
-                android:textColor="#212121"
-                android:textSize="60sp"
-                android:textStyle="bold" />
+            android:padding="24dp">
+            <TextView android:id="@+id/tvEquation" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="24sp" android:textColor="#666666"/>
+            <TextView android:id="@+id/tvDisplay" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0" android:textSize="42sp" android:textColor="@color/text_dark" android:textStyle="bold"/>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
     <GridLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:columnCount="4">
+        android:layout_marginTop="12dp"
+        android:columnCount="5">
 
+        <Button android:id="@+id/btnSin" style="@style/CalcBtn.Function" android:text="sin"/>
+        <Button android:id="@+id/btnCos" style="@style/CalcBtn.Function" android:text="cos"/>
+        <Button android:id="@+id/btnTan" style="@style/CalcBtn.Function" android:text="tan"/>
+        <Button android:id="@+id/btnAC" style="@style/CalcBtn.Clear" android:text="C"/>
+        <Button android:id="@+id/btnBack" style="@style/CalcBtn.Clear" android:text="⌫"/>
 
-        <com.google.android.material.button.MaterialButton android:id="@+id/btnRoot" style="@style/TopRowButtonStyle" android:text="√" app:backgroundTint="#BDBDBD" android:textColor="#333333" />
-        <com.google.android.material.button.MaterialButton android:id="@+id/btnPower" style="@style/TopRowButtonStyle" android:text="^" app:backgroundTint="#BDBDBD" android:textColor="#333333" />
-        <com.google.android.material.button.MaterialButton android:id="@+id/btnAC" style="@style/TopRowButtonStyle" android:text="AC" app:backgroundTint="#757575" />
-        <com.google.android.material.button.MaterialButton android:id="@+id/btnBack" style="@style/TopRowButtonStyle" android:text="⌫" app:backgroundTint="#E53935" />
+        <Button android:id="@+id/btnLog" style="@style/CalcBtn.Function" android:text="log"/>
+        <Button android:id="@+id/btnLn" style="@style/CalcBtn.Function" android:text="ln"/>
+        <Button android:id="@+id/btnOpen" style="@style/CalcBtn.Number" android:text="("/>
+        <Button android:id="@+id/btnClose" style="@style/CalcBtn.Number" android:text=")"/>
+        <Button android:id="@+id/btnRoot" style="@style/CalcBtn.Function" android:text="√"/>
 
-        <com.google.android.material.button.MaterialButton android:id="@+id/btn7" android:text="7" style="@style/NumericButtonStyle" />
-        <com.google.android.material.button.MaterialButton android:id="@+id/btn8" android:text="8" style="@style/NumericButtonStyle" />
-        <com.google.android.material.button.MaterialButton android:id="@+id/btn9" android:text="9" style="@style/NumericButtonStyle" />
-        <com.google.android.material.button.MaterialButton android:id="@+id/btnDivide" android:text="÷" style="@style/OperatorButtonStyle" />
+        <Button android:id="@+id/btn7" style="@style/CalcBtn.Number" android:text="7"/>
+        <Button android:id="@+id/btn8" style="@style/CalcBtn.Number" android:text="8"/>
+        <Button android:id="@+id/btn9" style="@style/CalcBtn.Number" android:text="9"/>
+        <Button android:id="@+id/btnDivide" style="@style/CalcBtn.Operator" android:text="÷"/>
+        <Button android:id="@+id/btnPower" style="@style/CalcBtn.Operator" android:text="^"/>
 
-        <com.google.android.material.button.MaterialButton android:id="@+id/btn4" android:text="4" style="@style/NumericButtonStyle" />
-        <com.google.android.material.button.MaterialButton android:id="@+id/btn5" android:text="5" style="@style/NumericButtonStyle" />
-        <com.google.android.material.button.MaterialButton android:id="@+id/btn6" android:text="6" style="@style/NumericButtonStyle" />
-        <com.google.android.material.button.MaterialButton android:id="@+id/btnMultiply" android:text="x" style="@style/OperatorButtonStyle" />
+        <Button android:id="@+id/btn4" style="@style/CalcBtn.Number" android:text="4"/>
+        <Button android:id="@+id/btn5" style="@style/CalcBtn.Number" android:text="5"/>
+        <Button android:id="@+id/btn6" style="@style/CalcBtn.Number" android:text="6"/>
+        <Button android:id="@+id/btnMultiply" style="@style/CalcBtn.Operator" android:text="×"/>
+        <Button android:id="@+id/btnFact" style="@style/CalcBtn.Function" android:text="!"/>
 
-        <com.google.android.material.button.MaterialButton android:id="@+id/btn1" android:text="1" style="@style/NumericButtonStyle" />
-        <com.google.android.material.button.MaterialButton android:id="@+id/btn2" android:text="2" style="@style/NumericButtonStyle" />
-        <com.google.android.material.button.MaterialButton android:id="@+id/btn3" android:text="3" style="@style/NumericButtonStyle" />
-        <com.google.android.material.button.MaterialButton android:id="@+id/btnMinus" android:text="-" style="@style/OperatorButtonStyle" />
+        <Button android:id="@+id/btn1" style="@style/CalcBtn.Number" android:text="1"/>
+        <Button android:id="@+id/btn2" style="@style/CalcBtn.Number" android:text="2"/>
+        <Button android:id="@+id/btn3" style="@style/CalcBtn.Number" android:text="3"/>
+        <Button android:id="@+id/btnMinus" style="@style/CalcBtn.Operator" android:text="-"/>
+        <Button android:id="@+id/btnPi" style="@style/CalcBtn.Function" android:text="π"/>
 
-        <com.google.android.material.button.MaterialButton android:id="@+id/btnDot" android:text="." style="@style/NumericButtonStyle" />
-        <com.google.android.material.button.MaterialButton android:id="@+id/btn0" android:text="0" style="@style/NumericButtonStyle" />
-        <com.google.android.material.button.MaterialButton android:id="@+id/btnPlus" android:text="+" style="@style/OperatorButtonStyle" android:layout_rowSpan="2" />
-        <com.google.android.material.button.MaterialButton android:id="@+id/btnEquals" android:text="=" style="@style/NumericButtonStyle" app:backgroundTint="#4CAF50" android:textColor="#FFFFFF"/>
-
+        <Button android:id="@+id/btn0" style="@style/CalcBtn.Number" android:text="0"/>
+        <Button android:id="@+id/btnDot" style="@style/CalcBtn.Number" android:text="."/>
+        <Button android:id="@+id/btnE" style="@style/CalcBtn.Function" android:text="e"/>
+        <Button android:id="@+id/btnPlus" style="@style/CalcBtn.Operator" android:text="+"/>
+        <Button android:id="@+id/btnEquals" style="@style/CalcBtn.Equals" android:text="="/>
     </GridLayout>
 </LinearLayout>
