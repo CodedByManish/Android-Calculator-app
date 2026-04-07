@@ -35,7 +35,7 @@ dependencies {
 
     implementation(libs.appcompat)
     implementation(libs.material)
-    implementation("net.objecthunter:exp4j:0.4.8")
+    implementation(libs.exp4j)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
