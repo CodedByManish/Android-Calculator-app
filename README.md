@@ -25,7 +25,7 @@ A sleek, minimalist, and high-performance calculator built with **Java** and **M
 
 ### 📸 Screenshots
 <p align="center">
-  <img src="screenshots/img.png" width="382" height="787" alt="demo"/>
+  <img src="screenshots/AndroCalc_v2.png" width="382" height="787" alt="demo"/>
 </p>
 
 ---
