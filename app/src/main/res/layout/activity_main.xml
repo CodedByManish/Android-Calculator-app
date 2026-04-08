@@ -54,15 +54,16 @@
 
         <Button android:id="@+id/btnLog" style="@style/CalcBtn.Function" android:text="log"/>
         <Button android:id="@+id/btnLn" style="@style/CalcBtn.Function" android:text="ln"/>
+        <Button android:id="@+id/btnRoot" style="@style/CalcBtn.Function" android:text="√"/>
         <Button android:id="@+id/btnOpen" style="@style/CalcBtn.Number" android:text="("/>
         <Button android:id="@+id/btnClose" style="@style/CalcBtn.Number" android:text=")"/>
-        <Button android:id="@+id/btnRoot" style="@style/CalcBtn.Function" android:text="√"/>
+
 
         <Button android:id="@+id/btn7" style="@style/CalcBtn.Number" android:text="7"/>
         <Button android:id="@+id/btn8" style="@style/CalcBtn.Number" android:text="8"/>
         <Button android:id="@+id/btn9" style="@style/CalcBtn.Number" android:text="9"/>
         <Button android:id="@+id/btnDivide" style="@style/CalcBtn.Operator" android:text="÷"/>
-        <Button android:id="@+id/btnPower" style="@style/CalcBtn.Operator" android:text="^"/>
+        <Button android:id="@+id/btnPower" style="@style/CalcBtn.Function" android:text="^"/>
 
         <Button android:id="@+id/btn4" style="@style/CalcBtn.Number" android:text="4"/>
         <Button android:id="@+id/btn5" style="@style/CalcBtn.Number" android:text="5"/>
