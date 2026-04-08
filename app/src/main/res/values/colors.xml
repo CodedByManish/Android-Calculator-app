@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="bg_grey">#F0F0F0</color>
-    <color name="display_bg">#F8F9FA</color>
-    <color name="btn_function">#D1ECF1</color>
-    <color name="btn_operator">#FFF3CD</color>
-    <color name="btn_equals">#D4EDDA</color>
-    <color name="btn_clear">#F8D7DA</color>
-    <color name="text_dark">#2C3E50</color>
+    <color name="bg_grey">#F2F2F2</color>
+    <color name="display_bg">#FAFBFC</color>
+    <color name="btn_function">#D9F0F5</color>
+    <color name="btn_operator">#FFF7DA</color>
+    <color name="btn_equals">#DDF2E2</color>
+    <color name="btn_clear">#FBE1E4</color>
+    <color name="text_dark">#34495E</color>
 </resources>
