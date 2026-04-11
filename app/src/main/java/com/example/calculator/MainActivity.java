@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
                     .replace("×", "*")
                     .replace("÷", "/")
                     .replace("log(", "log10(") // log base 10
-                    .replace("ln(", "log")     // exp4j uses log() for natural log (ln)
+                    .replace("ln(", "log(")     // exp4j uses log() for natural log (ln)
                     .replace("√(", "sqrt(")
                     .replace("π", "pi")
                     .replace("e", "e");
