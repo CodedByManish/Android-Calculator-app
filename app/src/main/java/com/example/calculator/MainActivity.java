@@ -36,13 +36,13 @@ public class MainActivity extends AppCompatActivity {
             findViewById(id).setOnClickListener(v -> insertText(((Button)v).getText().toString()));
         }
 
-        // Scientific Functions - Passing raw math strings to insertText
+        // Scientific Functions Mapping
         setupFunc(R.id.btnSin, "sin(");
         setupFunc(R.id.btnCos, "cos(");
         setupFunc(R.id.btnTan, "tan(");
-        setupFunc(R.id.btnLog, "log10("); // Will be mapped to visual "log("
-        setupFunc(R.id.btnLn, "log(");     // Will stay "log(" visually (exp4j uses log for natural log)
-        setupFunc(R.id.btnRoot, "sqrt(");  // Will be mapped to visual "√("
+        setupFunc(R.id.btnLog, "log10("); // Becomes "log(" visually
+        setupFunc(R.id.btnLn, "ln(");     // Becomes "ln(" visually, later mapped to exp4j "log("
+        setupFunc(R.id.btnRoot, "sqrt(");  // Becomes "√(" visually
 
         findViewById(R.id.btnMultiply).setOnClickListener(v -> insertText("*"));
         findViewById(R.id.btnDivide).setOnClickListener(v -> insertText("/"));
@@ -79,31 +79,29 @@ public class MainActivity extends AppCompatActivity {
         int cursorPosition = etEquation.getSelectionStart();
         Editable editable = etEquation.getText();
 
-        // 1. Convert math-engine strings to visual symbols before inserting
+        // Visual mapping: What the user sees in the EditText
         String visualStr = strToAdd
                 .replace("*", "×")
                 .replace("/", "÷")
                 .replace("log10(", "log(")
                 .replace("sqrt(", "√(");
+        // "ln(" remains "ln(" visually
 
-        // 2. Insert into the EditText at current cursor position
         editable.insert(cursorPosition, visualStr);
-
-        // Cursor moves automatically with Editable.insert
     }
 
     private void calculate() {
         try {
-            // Convert visual symbols back to math engine logic strings
+            // Logic mapping: Convert visual symbols to exp4j internal functions
             String formula = etEquation.getText().toString()
                     .replace("×", "*")
                     .replace("÷", "/")
-                    .replace("log(", "log10(") // Base 10
+                    .replace("log(", "log10(") // log base 10
+                    .replace("ln(", "log")     // exp4j uses log() for natural log (ln)
                     .replace("√(", "sqrt(")
                     .replace("π", "pi")
                     .replace("e", "e");
 
-            // Handle Trig Degree/Radian conversion
             if (!isRadianMode) {
                 formula = formula.replace("sin(", "sin(pi/180*")
                         .replace("cos(", "cos(pi/180*")
