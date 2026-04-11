@@ -35,7 +35,21 @@
             android:gravity="bottom|end"
             android:orientation="vertical"
             android:padding="24dp">
-            <TextView android:id="@+id/tvEquation" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="24sp" android:textColor="#666666"/>
+            <EditText
+                android:id="@+id/etEquation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:gravity="end"
+                android:hint="0"
+                android:inputType="textNoSuggestions"
+                android:maxLines="1"
+                android:scrollHorizontally="true"
+                android:singleLine="true"
+                android:textColor="#666666"
+                android:textSize="24sp"
+                android:textIsSelectable="true"
+                android:showSoftInputOnFocus="false" />
             <TextView android:id="@+id/tvDisplay" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0" android:textSize="42sp" android:textColor="@color/text_dark" android:textStyle="bold"/>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
