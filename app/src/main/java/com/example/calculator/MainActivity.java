@@ -9,6 +9,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
+import net.objecthunter.exp4j.function.Function;
+import java.text.DecimalFormat;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -29,20 +31,19 @@ public class MainActivity extends AppCompatActivity {
         SwitchMaterial modeToggle = findViewById(R.id.modeToggle);
         modeToggle.setOnCheckedChangeListener((v, isChecked) -> isRadianMode = isChecked);
 
-        // Standard Numbers and Operators
         int[] ids = {R.id.btn0, R.id.btn1, R.id.btn2, R.id.btn3, R.id.btn4, R.id.btn5, R.id.btn6, R.id.btn7, R.id.btn8, R.id.btn9,
                 R.id.btnDot, R.id.btnOpen, R.id.btnClose, R.id.btnPlus, R.id.btnMinus, R.id.btnPower};
         for (int id : ids) {
             findViewById(id).setOnClickListener(v -> insertText(((Button)v).getText().toString()));
         }
 
-        // Scientific Functions Mapping
         setupFunc(R.id.btnSin, "sin(");
         setupFunc(R.id.btnCos, "cos(");
         setupFunc(R.id.btnTan, "tan(");
-        setupFunc(R.id.btnLog, "log10("); // Becomes "log(" visually
-        setupFunc(R.id.btnLn, "ln(");     // Becomes "ln(" visually, later mapped to exp4j "log("
-        setupFunc(R.id.btnRoot, "sqrt(");  // Becomes "√(" visually
+        setupFunc(R.id.btnLog, "log10(");
+        setupFunc(R.id.btnLn, "ln(");
+        setupFunc(R.id.btnRoot, "sqrt(");
+        setupFunc(R.id.btnFact, "fact("); // Changed to function style for exp4j
 
         findViewById(R.id.btnMultiply).setOnClickListener(v -> insertText("*"));
         findViewById(R.id.btnDivide).setOnClickListener(v -> insertText("/"));
@@ -79,26 +80,25 @@ public class MainActivity extends AppCompatActivity {
         int cursorPosition = etEquation.getSelectionStart();
         Editable editable = etEquation.getText();
 
-        // Visual mapping: What the user sees in the EditText
         String visualStr = strToAdd
                 .replace("*", "×")
                 .replace("/", "÷")
                 .replace("log10(", "log(")
-                .replace("sqrt(", "√(");
-        // "ln(" remains "ln(" visually
+                .replace("sqrt(", "√(")
+                .replace("fact(", "!("); // Show ! visually
 
         editable.insert(cursorPosition, visualStr);
     }
 
     private void calculate() {
         try {
-            // Logic mapping: Convert visual symbols to exp4j internal functions
             String formula = etEquation.getText().toString()
                     .replace("×", "*")
                     .replace("÷", "/")
-                    .replace("log(", "log10(") // log base 10
-                    .replace("ln(", "log(")     // exp4j uses log() for natural log (ln)
+                    .replace("log(", "log10(")
+                    .replace("ln(", "log")
                     .replace("√(", "sqrt(")
+                    .replace("!(", "fact(") // Logic back to function
                     .replace("π", "pi")
                     .replace("e", "e");
 
@@ -108,16 +108,42 @@ public class MainActivity extends AppCompatActivity {
                         .replace("tan(", "tan(pi/180*");
             }
 
-            Expression e = new ExpressionBuilder(formula).build();
+            // Custom Factorial Function for exp4j
+            Function fact = new Function("fact", 1) {
+                @Override
+                public double apply(double... args) {
+                    double n = args[0];
+                    if (n < 0) return Double.NaN;
+                    double result = 1;
+                    for (int i = 1; i <= n; i++) result *= i;
+                    return result;
+                }
+            };
+
+            Expression e = new ExpressionBuilder(formula)
+                    .function(fact)
+                    .build();
+
             double res = e.evaluate();
-
-            String resultStr = (res % 1 == 0) ? String.valueOf((long)res) : String.valueOf(res);
-            tvDisplay.setText(resultStr);
-
+            tvDisplay.setText(formatResult(res));
             shouldClearHeader = true;
 
         } catch (Exception e) {
             tvDisplay.setText("Error");
         }
+    }
+
+    // New method to handle scientific notation and precision
+    private String formatResult(double res) {
+        if (Double.isInfinite(res) || Double.isNaN(res)) return "Error";
+
+        // If number is larger than 10 digits or very tiny, use scientific notation
+        if (Math.abs(res) >= 1_000_000_000L || (Math.abs(res) < 0.0000001 && res != 0)) {
+            return new DecimalFormat("0.######E0").format(res);
+        }
+
+        // Otherwise, format as standard decimal, removing trailing zeros
+        DecimalFormat df = new DecimalFormat("0.##########");
+        return df.format(res);
     }
 }
