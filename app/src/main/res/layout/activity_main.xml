@@ -59,7 +59,7 @@
                 android:maxLines="1"
                 android:scrollHorizontally="true"
                 android:singleLine="true"
-                android:textColor="@color/text_main"
+                android:textColor="@color/text_dark"
                 android:textSize="36sp"
                 android:textIsSelectable="true"
                 android:cursorVisible="true" />
