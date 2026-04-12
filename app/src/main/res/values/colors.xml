@@ -6,5 +6,12 @@
     <color name="btn_operator">#FFF7DA</color>
     <color name="btn_equals">#DDF2E2</color>
     <color name="btn_clear">#FBE1E4</color>
-    <color name="text_dark">#34495E</color>
+    <color name="btn_number">#E9ECEF</color>
+
+    <color name="text_main">#34495E</color>
+    <color name="text_secondary">#666666</color>
+    <color name="text_function">#0C5460</color>
+    <color name="text_operator">#856404</color>
+    <color name="text_clear">#721C24</color>
+    <color name="text_equals">#155724</color>
 </resources>

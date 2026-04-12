@@ -30,7 +30,8 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_more_vert"
             android:contentDescription="Menu"
-            android:layout_marginStart="8dp"/>
+            android:layout_marginStart="8dp"
+            android:appTint="@color/text_main" />
 
     </LinearLayout>
 
@@ -59,12 +60,12 @@
                 android:maxLines="1"
                 android:scrollHorizontally="true"
                 android:singleLine="true"
-                android:textColor="@color/text_dark"
+                android:textColor="@color/text_main"
                 android:textSize="36sp"
                 android:textIsSelectable="true"
                 android:cursorVisible="true" />
 
-            <TextView android:id="@+id/tvDisplay" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="29sp" android:layout_marginTop="4dp" android:textColor="#666666" android:textStyle="bold"/>
+            <TextView android:id="@+id/tvDisplay" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="29sp" android:layout_marginTop="4dp" android:textColor="@color/text_secondary" android:textStyle="bold"/>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
