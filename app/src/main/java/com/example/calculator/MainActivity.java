@@ -31,8 +31,9 @@ public class MainActivity extends AppCompatActivity {
         SwitchMaterial modeToggle = findViewById(R.id.modeToggle);
         modeToggle.setOnCheckedChangeListener((v, isChecked) -> isRadianMode = isChecked);
 
+        // Standard Numbers and Basic Operators
         int[] ids = {R.id.btn0, R.id.btn1, R.id.btn2, R.id.btn3, R.id.btn4, R.id.btn5, R.id.btn6, R.id.btn7, R.id.btn8, R.id.btn9,
-                R.id.btnDot, R.id.btnOpen, R.id.btnClose, R.id.btnPlus, R.id.btnMinus, R.id.btnPower, R.id.btnFact}; // btnFact back here
+                R.id.btnDot, R.id.btnOpen, R.id.btnClose, R.id.btnPlus, R.id.btnMinus, R.id.btnPower, R.id.btnFact};
         for (int id : ids) {
             findViewById(id).setOnClickListener(v -> insertText(((Button)v).getText().toString()));
         }
@@ -71,8 +72,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void insertText(String strToAdd) {
+        String currentResult = tvDisplay.getText().toString();
+
         if (shouldClearHeader) {
-            etEquation.setText("");
+            // Check if the input is an operator or a number/function
+            boolean isOperator = strToAdd.matches("[\\+\\-\\*/\\^!×÷]");
+
+            if (isOperator && !currentResult.equals("Error")) {
+                etEquation.setText(currentResult);
+                etEquation.setSelection(etEquation.getText().length());
+            } else {
+                etEquation.setText("");
+            }
             shouldClearHeader = false;
         }
 
@@ -105,12 +116,11 @@ public class MainActivity extends AppCompatActivity {
                         .replace("tan(", "tan(pi/180*");
             }
 
-            // Create Factorial as a Custom Operator (!)
             Operator factorial = new Operator("!", 1, true, Operator.PRECEDENCE_POWER + 1) {
                 @Override
                 public double apply(double... args) {
                     int arg = (int) args[0];
-                    if (arg < 0) throw new IllegalArgumentException("Cannot be negative");
+                    if (arg < 0) throw new IllegalArgumentException();
                     double result = 1;
                     for (int i = 1; i <= arg; i++) result *= i;
                     return result;
@@ -127,6 +137,7 @@ public class MainActivity extends AppCompatActivity {
 
         } catch (Exception e) {
             tvDisplay.setText("Error");
+            shouldClearHeader = true; // Still clear on error
         }
     }
 
