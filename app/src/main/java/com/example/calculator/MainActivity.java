@@ -12,6 +12,8 @@ import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 import net.objecthunter.exp4j.operator.Operator;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -19,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText etEquation;
     private boolean isRadianMode = false;
     private boolean shouldClearHeader = false;
+    private boolean isFormatting = false; // Prevents infinite loops in TextWatcher
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +32,6 @@ public class MainActivity extends AppCompatActivity {
         etEquation = findViewById(R.id.etEquation);
         etEquation.setShowSoftInputOnFocus(false);
 
-        // Ensure both start completely blank
         etEquation.setText("");
         tvDisplay.setText("");
 
@@ -42,12 +44,18 @@ public class MainActivity extends AppCompatActivity {
         etEquation.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (isFormatting) return; // Skip if we are currently re-formatting
                 doRealTimeEval();
             }
+
             @Override
-            public void afterTextChanged(Editable s) {}
+            public void afterTextChanged(Editable s) {
+                if (isFormatting) return;
+                applyCommaFormatting(s);
+            }
         });
 
         int[] ids = {R.id.btn0, R.id.btn1, R.id.btn2, R.id.btn3, R.id.btn4, R.id.btn5, R.id.btn6, R.id.btn7, R.id.btn8, R.id.btn9,
@@ -70,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
 
         findViewById(R.id.btnAC).setOnClickListener(v -> {
             etEquation.setText("");
-            tvDisplay.setText(""); // Blank instead of 0
+            tvDisplay.setText("");
             shouldClearHeader = false;
         });
 
@@ -112,10 +120,55 @@ public class MainActivity extends AppCompatActivity {
         etEquation.getText().insert(cursorPosition, visualStr);
     }
 
-    private void doRealTimeEval() {
-        String input = etEquation.getText().toString();
+    // New Helper to apply commas to the EditText as you type
+    private void applyCommaFormatting(Editable s) {
+        isFormatting = true;
+        String original = s.toString().replace(",", ""); // Remove existing commas to re-calculate
 
-        // If empty, keep display blank
+        // Use regex to find numbers and add commas to them without breaking operators/functions
+        StringBuilder formatted = new StringBuilder();
+        String[] parts = original.split("(?<=[^0-9.])|(?=[^0-9.])");
+
+        for (String part : parts) {
+            if (part.matches("[0-9.]+")) {
+                formatted.append(formatNumberWithCommas(part));
+            } else {
+                formatted.append(part);
+            }
+        }
+
+        int cursorPosition = etEquation.getSelectionStart();
+        int oldLength = s.length();
+
+        etEquation.setText(formatted.toString());
+
+        // Adjust cursor position so it doesn't jump to the start
+        int newLength = etEquation.getText().length();
+        int newCursor = cursorPosition + (newLength - oldLength);
+        etEquation.setSelection(Math.max(0, Math.min(newCursor, newLength)));
+
+        isFormatting = false;
+    }
+
+    private String formatNumberWithCommas(String number) {
+        try {
+            if (number.contains(".")) {
+                String[] split = number.split("\\.");
+                double integerPart = Double.parseDouble(split[0]);
+                String formattedInt = NumberFormat.getNumberInstance(Locale.US).format(integerPart);
+                return formattedInt + "." + (split.length > 1 ? split[1] : "");
+            } else {
+                return NumberFormat.getNumberInstance(Locale.US).format(Double.parseDouble(number));
+            }
+        } catch (Exception e) {
+            return number;
+        }
+    }
+
+    private void doRealTimeEval() {
+        // Clean formula: MUST remove commas before passing to exp4j
+        String input = etEquation.getText().toString().replace(",", "");
+
         if (input.isEmpty()) {
             tvDisplay.setText("");
             return;
@@ -147,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
             double res = e.evaluate();
             tvDisplay.setText(formatResult(res));
         } catch (Exception e) {
-            // Keep previous result or stay blank while typing is invalid
+            // Silently ignore typing errors
         }
     }
 
@@ -155,9 +208,6 @@ public class MainActivity extends AppCompatActivity {
         if (etEquation.getText().toString().isEmpty()) return;
         try {
             doRealTimeEval();
-            if (tvDisplay.getText().toString().isEmpty()) {
-                tvDisplay.setText("Error");
-            }
         } catch (Exception e) {
             tvDisplay.setText("Error");
         }
@@ -165,9 +215,15 @@ public class MainActivity extends AppCompatActivity {
 
     private String formatResult(double res) {
         if (Double.isInfinite(res) || Double.isNaN(res)) return "Error";
+
+        // Scientific notation for very large numbers
         if (Math.abs(res) >= 1_000_000_000L || (Math.abs(res) < 0.0000001 && res != 0)) {
             return new DecimalFormat("0.######E0").format(res);
         }
-        return new DecimalFormat("0.#######").format(res);
+
+        // For standard numbers, use grouping (commas)
+        DecimalFormat df = (DecimalFormat) NumberFormat.getNumberInstance(Locale.US);
+        df.applyPattern("#,###.#######");
+        return df.format(res);
     }
 }
