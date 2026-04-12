@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHolder> {
+
     private final List<String[]> historyList;
 
     public HistoryAdapter(List<String[]> historyList) {
@@ -18,13 +19,15 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_history, parent, false);
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_history, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         String[] item = historyList.get(position);
+        // item[0] is the Equation, item[1] is the Result
         holder.tvEquation.setText(item[0]);
         holder.tvResult.setText(item[1]);
     }
@@ -36,7 +39,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvEquation, tvResult;
-        public ViewHolder(View itemView) {
+
+        public ViewHolder(@NonNull View itemView) {
             super(itemView);
             tvEquation = itemView.findViewById(R.id.hiEquation);
             tvResult = itemView.findViewById(R.id.hiResult);

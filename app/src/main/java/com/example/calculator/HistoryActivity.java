@@ -2,11 +2,11 @@ package com.example.calculator;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.widget.Button;
 import android.widget.ImageButton;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.util.ArrayList;
@@ -24,7 +24,7 @@ public class HistoryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_history);
 
         ImageButton btnBack = findViewById(R.id.btnBackHistory);
-        Button btnClear = findViewById(R.id.btnClearHistory);
+        ImageButton btnClear = findViewById(R.id.btnClearHistory);
         rvHistory = findViewById(R.id.rvHistory);
 
         btnBack.setOnClickListener(v -> finish());
@@ -32,11 +32,24 @@ public class HistoryActivity extends AppCompatActivity {
         loadHistory();
 
         btnClear.setOnClickListener(v -> {
-            SharedPreferences sp = getSharedPreferences("calc_prefs", MODE_PRIVATE);
-            sp.edit().remove("history").apply();
-            historyList.clear();
-            adapter.notifyDataSetChanged();
+            if (historyList != null && !historyList.isEmpty()) {
+                showDeleteConfirmation();
+            }
         });
+    }
+
+    private void showDeleteConfirmation() {
+        new MaterialAlertDialogBuilder(this)
+                .setTitle("Clear History")
+                .setMessage("Are you sure you want to delete all calculation history?")
+                .setPositiveButton("Clear All", (dialog, which) -> {
+                    SharedPreferences sp = getSharedPreferences("calc_prefs", MODE_PRIVATE);
+                    sp.edit().remove("history").apply();
+                    historyList.clear();
+                    adapter.notifyDataSetChanged();
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
     }
 
     private void loadHistory() {

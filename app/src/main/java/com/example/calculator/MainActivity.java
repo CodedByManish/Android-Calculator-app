@@ -74,7 +74,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(this, HistoryActivity.class));
                 return true;
             } else if (id == R.id.action_settings) {
-                // Settings logic here
                 return true;
             }
             return false;
