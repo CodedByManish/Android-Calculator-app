@@ -58,7 +58,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Setup all button listeners...
         setupButtons();
     }
 
@@ -83,7 +82,6 @@ public class MainActivity extends AppCompatActivity {
         isFormatting = true;
         String original = s.toString().replace(",", "");
         StringBuilder formatted = new StringBuilder();
-        // Regex splits numbers from non-numbers
         String[] parts = original.split("(?<=[^0-9.])|(?=[^0-9.])");
 
         for (String part : parts) {
@@ -104,7 +102,6 @@ public class MainActivity extends AppCompatActivity {
 
     private String formatNumberWithCommas(String number) {
         try {
-            // Use BigDecimal to prevent "1000...016" precision errors in the header
             if (number.contains(".")) {
                 String[] split = number.split("\\.");
                 BigDecimal integerPart = new BigDecimal(split[0]);
@@ -145,13 +142,17 @@ public class MainActivity extends AppCompatActivity {
             Expression e = new ExpressionBuilder(formula).operator(factorial).build();
             double res = e.evaluate();
             tvDisplay.setText(formatResult(res));
-        } catch (Exception e) { /* typing... */ }
+        } catch (ArithmeticException e) {
+            tvDisplay.setText("Cannot divide by 0");
+        } catch (Exception e) {
+            tvDisplay.setText(""); // Keep blank during real-time typing errors
+        }
     }
 
     private String formatResult(double res) {
-        if (Double.isInfinite(res) || Double.isNaN(res)) return "Error";
+        if (Double.isInfinite(res)) return "Cannot divide by 0";
+        if (Double.isNaN(res)) return "Expression Error";
 
-        // Use a threshold to switch to Scientific Notation
         if (Math.abs(res) >= 1_000_000_000_000_000L || (Math.abs(res) < 0.000001 && res != 0)) {
             return new DecimalFormat("0.######E0").format(res);
         }
@@ -161,7 +162,6 @@ public class MainActivity extends AppCompatActivity {
         return df.format(res);
     }
 
-    // Standard button boilerplate...
     private void setupButtons() {
         int[] ids = {R.id.btn0, R.id.btn1, R.id.btn2, R.id.btn3, R.id.btn4, R.id.btn5, R.id.btn6, R.id.btn7, R.id.btn8, R.id.btn9,
                 R.id.btnDot, R.id.btnOpen, R.id.btnClose, R.id.btnPlus, R.id.btnMinus, R.id.btnPower, R.id.btnFact};
@@ -182,19 +182,12 @@ public class MainActivity extends AppCompatActivity {
             int pos = etEquation.getSelectionStart();
             if (pos > 0) etEquation.getText().delete(pos - 1, pos);
         });
-        findViewById(R.id.btnEquals).setOnClickListener(v -> {
-            calculate();
-            shouldClearHeader = true;
-        });
+        findViewById(R.id.btnEquals).setOnClickListener(v -> calculate());
     }
 
     private void insertText(String str) {
         if (shouldClearHeader) {
-            String res = tvDisplay.getText().toString();
-            if (str.matches("[\\+\\-\\*/\\^!×÷]") && !res.isEmpty()) {
-                etEquation.setText(res);
-                etEquation.setSelection(etEquation.getText().length());
-            } else { etEquation.setText(""); }
+            etEquation.setText("");
             shouldClearHeader = false;
         }
         int pos = etEquation.getSelectionStart();
@@ -203,6 +196,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void calculate() {
-        try { doRealTimeEval(); } catch (Exception e) { tvDisplay.setText("Error"); }
+        String result = tvDisplay.getText().toString();
+        if (result.isEmpty()) return;
+
+        if (result.equals("Cannot divide by 0") || result.equals("Expression Error")) {
+            // Keep the error in the display but don't move it up
+            shouldClearHeader = true;
+        } else {
+            // Move result to equation and clear display
+            etEquation.setText(result);
+            etEquation.setSelection(etEquation.getText().length());
+            tvDisplay.setText("");
+            shouldClearHeader = false; // Reset so user can keep typing from the result
+        }
     }
 }
