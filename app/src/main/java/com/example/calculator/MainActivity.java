@@ -3,14 +3,19 @@ package com.example.calculator;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 import net.objecthunter.exp4j.operator.Operator;
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
@@ -21,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText etEquation;
     private boolean isRadianMode = false;
     private boolean shouldClearHeader = false;
-    private boolean isFormatting = false; // Prevents infinite loops in TextWatcher
+    private boolean isFormatting = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,8 +37,8 @@ public class MainActivity extends AppCompatActivity {
         etEquation = findViewById(R.id.etEquation);
         etEquation.setShowSoftInputOnFocus(false);
 
-        etEquation.setText("");
-        tvDisplay.setText("");
+        ImageButton btnMenu = findViewById(R.id.btnMenu);
+        btnMenu.setOnClickListener(v -> showPopupMenu(v));
 
         SwitchMaterial modeToggle = findViewById(R.id.modeToggle);
         modeToggle.setOnCheckedChangeListener((v, isChecked) -> {
@@ -42,91 +47,43 @@ public class MainActivity extends AppCompatActivity {
         });
 
         etEquation.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (isFormatting) return; // Skip if we are currently re-formatting
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (isFormatting) return;
                 doRealTimeEval();
             }
-
-            @Override
-            public void afterTextChanged(Editable s) {
+            @Override public void afterTextChanged(Editable s) {
                 if (isFormatting) return;
                 applyCommaFormatting(s);
             }
         });
 
-        int[] ids = {R.id.btn0, R.id.btn1, R.id.btn2, R.id.btn3, R.id.btn4, R.id.btn5, R.id.btn6, R.id.btn7, R.id.btn8, R.id.btn9,
-                R.id.btnDot, R.id.btnOpen, R.id.btnClose, R.id.btnPlus, R.id.btnMinus, R.id.btnPower, R.id.btnFact};
-        for (int id : ids) {
-            findViewById(id).setOnClickListener(v -> insertText(((Button)v).getText().toString()));
-        }
+        // Setup all button listeners...
+        setupButtons();
+    }
 
-        setupFunc(R.id.btnSin, "sin(");
-        setupFunc(R.id.btnCos, "cos(");
-        setupFunc(R.id.btnTan, "tan(");
-        setupFunc(R.id.btnLog, "log10(");
-        setupFunc(R.id.btnLn, "ln(");
-        setupFunc(R.id.btnRoot, "sqrt(");
-
-        findViewById(R.id.btnMultiply).setOnClickListener(v -> insertText("*"));
-        findViewById(R.id.btnDivide).setOnClickListener(v -> insertText("/"));
-        findViewById(R.id.btnPi).setOnClickListener(v -> insertText("π"));
-        findViewById(R.id.btnE).setOnClickListener(v -> insertText("e"));
-
-        findViewById(R.id.btnAC).setOnClickListener(v -> {
-            etEquation.setText("");
-            tvDisplay.setText("");
-            shouldClearHeader = false;
-        });
-
-        findViewById(R.id.btnBack).setOnClickListener(v -> {
-            int cursorPosition = etEquation.getSelectionStart();
-            if (cursorPosition > 0) {
-                etEquation.getText().delete(cursorPosition - 1, cursorPosition);
+    private void showPopupMenu(android.view.View view) {
+        PopupMenu popup = new PopupMenu(this, view);
+        popup.getMenuInflater().inflate(R.menu.main_menu, popup.getMenu());
+        popup.setOnMenuItemClickListener(item -> {
+            int id = item.getItemId();
+            if (id == R.id.action_history) {
+                Toast.makeText(this, "History clicked", Toast.LENGTH_SHORT).show();
+                return true;
+            } else if (id == R.id.action_settings) {
+                Toast.makeText(this, "Settings clicked", Toast.LENGTH_SHORT).show();
+                return true;
             }
+            return false;
         });
-
-        findViewById(R.id.btnEquals).setOnClickListener(v -> {
-            calculate();
-            shouldClearHeader = true;
-        });
+        popup.show();
     }
 
-    private void setupFunc(int id, String text) {
-        findViewById(id).setOnClickListener(v -> insertText(text));
-    }
-
-    private void insertText(String strToAdd) {
-        String currentResult = tvDisplay.getText().toString();
-
-        if (shouldClearHeader) {
-            boolean isOperator = strToAdd.matches("[\\+\\-\\*/\\^!×÷]");
-            if (isOperator && !currentResult.isEmpty() && !currentResult.equals("Error")) {
-                etEquation.setText(currentResult);
-                etEquation.setSelection(etEquation.getText().length());
-            } else {
-                etEquation.setText("");
-            }
-            shouldClearHeader = false;
-        }
-
-        int cursorPosition = etEquation.getSelectionStart();
-        String visualStr = strToAdd.replace("*", "×").replace("/", "÷")
-                .replace("log10(", "log(").replace("sqrt(", "√(");
-
-        etEquation.getText().insert(cursorPosition, visualStr);
-    }
-
-    // New Helper to apply commas to the EditText as you type
     private void applyCommaFormatting(Editable s) {
         isFormatting = true;
-        String original = s.toString().replace(",", ""); // Remove existing commas to re-calculate
-
-        // Use regex to find numbers and add commas to them without breaking operators/functions
+        String original = s.toString().replace(",", "");
         StringBuilder formatted = new StringBuilder();
+        // Regex splits numbers from non-numbers
         String[] parts = original.split("(?<=[^0-9.])|(?=[^0-9.])");
 
         for (String part : parts) {
@@ -138,27 +95,23 @@ public class MainActivity extends AppCompatActivity {
         }
 
         int cursorPosition = etEquation.getSelectionStart();
-        int oldLength = s.length();
-
+        int oldLen = s.length();
         etEquation.setText(formatted.toString());
-
-        // Adjust cursor position so it doesn't jump to the start
-        int newLength = etEquation.getText().length();
-        int newCursor = cursorPosition + (newLength - oldLength);
-        etEquation.setSelection(Math.max(0, Math.min(newCursor, newLength)));
-
+        int newLen = etEquation.getText().length();
+        etEquation.setSelection(Math.max(0, Math.min(cursorPosition + (newLen - oldLen), newLen)));
         isFormatting = false;
     }
 
     private String formatNumberWithCommas(String number) {
         try {
+            // Use BigDecimal to prevent "1000...016" precision errors in the header
             if (number.contains(".")) {
                 String[] split = number.split("\\.");
-                double integerPart = Double.parseDouble(split[0]);
+                BigDecimal integerPart = new BigDecimal(split[0]);
                 String formattedInt = NumberFormat.getNumberInstance(Locale.US).format(integerPart);
                 return formattedInt + "." + (split.length > 1 ? split[1] : "");
             } else {
-                return NumberFormat.getNumberInstance(Locale.US).format(Double.parseDouble(number));
+                return NumberFormat.getNumberInstance(Locale.US).format(new BigDecimal(number));
             }
         } catch (Exception e) {
             return number;
@@ -166,13 +119,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void doRealTimeEval() {
-        // Clean formula: MUST remove commas before passing to exp4j
         String input = etEquation.getText().toString().replace(",", "");
-
-        if (input.isEmpty()) {
-            tvDisplay.setText("");
-            return;
-        }
+        if (input.isEmpty()) { tvDisplay.setText(""); return; }
 
         try {
             String formula = input.replace("×", "*").replace("÷", "/")
@@ -186,44 +134,75 @@ public class MainActivity extends AppCompatActivity {
             }
 
             Operator factorial = new Operator("!", 1, true, Operator.PRECEDENCE_POWER + 1) {
-                @Override
-                public double apply(double... args) {
-                    int arg = (int) args[0];
-                    if (arg < 0) throw new IllegalArgumentException();
-                    double result = 1;
-                    for (int i = 1; i <= arg; i++) result *= i;
-                    return result;
+                @Override public double apply(double... args) {
+                    long arg = (long) args[0];
+                    double res = 1;
+                    for (int i = 1; i <= arg; i++) res *= i;
+                    return res;
                 }
             };
 
             Expression e = new ExpressionBuilder(formula).operator(factorial).build();
             double res = e.evaluate();
             tvDisplay.setText(formatResult(res));
-        } catch (Exception e) {
-            // Silently ignore typing errors
-        }
-    }
-
-    private void calculate() {
-        if (etEquation.getText().toString().isEmpty()) return;
-        try {
-            doRealTimeEval();
-        } catch (Exception e) {
-            tvDisplay.setText("Error");
-        }
+        } catch (Exception e) { /* typing... */ }
     }
 
     private String formatResult(double res) {
         if (Double.isInfinite(res) || Double.isNaN(res)) return "Error";
 
-        // Scientific notation for very large numbers
-        if (Math.abs(res) >= 1_000_000_000L || (Math.abs(res) < 0.0000001 && res != 0)) {
+        // Use a threshold to switch to Scientific Notation
+        if (Math.abs(res) >= 1_000_000_000_000_000L || (Math.abs(res) < 0.000001 && res != 0)) {
             return new DecimalFormat("0.######E0").format(res);
         }
 
-        // For standard numbers, use grouping (commas)
         DecimalFormat df = (DecimalFormat) NumberFormat.getNumberInstance(Locale.US);
         df.applyPattern("#,###.#######");
         return df.format(res);
+    }
+
+    // Standard button boilerplate...
+    private void setupButtons() {
+        int[] ids = {R.id.btn0, R.id.btn1, R.id.btn2, R.id.btn3, R.id.btn4, R.id.btn5, R.id.btn6, R.id.btn7, R.id.btn8, R.id.btn9,
+                R.id.btnDot, R.id.btnOpen, R.id.btnClose, R.id.btnPlus, R.id.btnMinus, R.id.btnPower, R.id.btnFact};
+        for (int id : ids) findViewById(id).setOnClickListener(v -> insertText(((Button)v).getText().toString()));
+
+        findViewById(R.id.btnSin).setOnClickListener(v -> insertText("sin("));
+        findViewById(R.id.btnCos).setOnClickListener(v -> insertText("cos("));
+        findViewById(R.id.btnTan).setOnClickListener(v -> insertText("tan("));
+        findViewById(R.id.btnLog).setOnClickListener(v -> insertText("log10("));
+        findViewById(R.id.btnLn).setOnClickListener(v -> insertText("ln("));
+        findViewById(R.id.btnRoot).setOnClickListener(v -> insertText("sqrt("));
+        findViewById(R.id.btnMultiply).setOnClickListener(v -> insertText("*"));
+        findViewById(R.id.btnDivide).setOnClickListener(v -> insertText("/"));
+        findViewById(R.id.btnPi).setOnClickListener(v -> insertText("π"));
+        findViewById(R.id.btnE).setOnClickListener(v -> insertText("e"));
+        findViewById(R.id.btnAC).setOnClickListener(v -> { etEquation.setText(""); tvDisplay.setText(""); });
+        findViewById(R.id.btnBack).setOnClickListener(v -> {
+            int pos = etEquation.getSelectionStart();
+            if (pos > 0) etEquation.getText().delete(pos - 1, pos);
+        });
+        findViewById(R.id.btnEquals).setOnClickListener(v -> {
+            calculate();
+            shouldClearHeader = true;
+        });
+    }
+
+    private void insertText(String str) {
+        if (shouldClearHeader) {
+            String res = tvDisplay.getText().toString();
+            if (str.matches("[\\+\\-\\*/\\^!×÷]") && !res.isEmpty()) {
+                etEquation.setText(res);
+                etEquation.setSelection(etEquation.getText().length());
+            } else { etEquation.setText(""); }
+            shouldClearHeader = false;
+        }
+        int pos = etEquation.getSelectionStart();
+        String visual = str.replace("*", "×").replace("/", "÷").replace("log10(", "log(").replace("sqrt(", "√(");
+        etEquation.getText().insert(pos, visual);
+    }
+
+    private void calculate() {
+        try { doRealTimeEval(); } catch (Exception e) { tvDisplay.setText("Error"); }
     }
 }
