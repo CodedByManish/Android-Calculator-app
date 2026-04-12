@@ -2,7 +2,7 @@ package com.example.calculator;
 
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.TextWatcher; // Added
+import android.text.TextWatcher;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -29,22 +29,23 @@ public class MainActivity extends AppCompatActivity {
         etEquation = findViewById(R.id.etEquation);
         etEquation.setShowSoftInputOnFocus(false);
 
+        // Ensure both start completely blank
+        etEquation.setText("");
+        tvDisplay.setText("");
+
         SwitchMaterial modeToggle = findViewById(R.id.modeToggle);
         modeToggle.setOnCheckedChangeListener((v, isChecked) -> {
             isRadianMode = isChecked;
-            doRealTimeEval(); // Re-evaluate when toggling Deg/Rad
+            doRealTimeEval();
         });
 
-        // --- Real-Time Output Logic ---
         etEquation.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 doRealTimeEval();
             }
-
             @Override
             public void afterTextChanged(Editable s) {}
         });
@@ -69,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
 
         findViewById(R.id.btnAC).setOnClickListener(v -> {
             etEquation.setText("");
-            tvDisplay.setText("0");
+            tvDisplay.setText(""); // Blank instead of 0
             shouldClearHeader = false;
         });
 
@@ -95,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (shouldClearHeader) {
             boolean isOperator = strToAdd.matches("[\\+\\-\\*/\\^!×÷]");
-            if (isOperator && !currentResult.equals("Error")) {
+            if (isOperator && !currentResult.isEmpty() && !currentResult.equals("Error")) {
                 etEquation.setText(currentResult);
                 etEquation.setSelection(etEquation.getText().length());
             } else {
@@ -111,11 +112,12 @@ public class MainActivity extends AppCompatActivity {
         etEquation.getText().insert(cursorPosition, visualStr);
     }
 
-    // Core evaluation logic used by both real-time and equals button
     private void doRealTimeEval() {
         String input = etEquation.getText().toString();
+
+        // If empty, keep display blank
         if (input.isEmpty()) {
-            tvDisplay.setText("0");
+            tvDisplay.setText("");
             return;
         }
 
@@ -145,18 +147,17 @@ public class MainActivity extends AppCompatActivity {
             double res = e.evaluate();
             tvDisplay.setText(formatResult(res));
         } catch (Exception e) {
-            // While typing, we don't show "Error" unless it's a final calculation
-            // This keeps the UI clean while the user is mid-sentence
+            // Keep previous result or stay blank while typing is invalid
         }
     }
 
     private void calculate() {
-        // Final calculation: if it's currently an error, show it
-        String currentInput = etEquation.getText().toString();
-        if (currentInput.isEmpty()) return;
-
+        if (etEquation.getText().toString().isEmpty()) return;
         try {
             doRealTimeEval();
+            if (tvDisplay.getText().toString().isEmpty()) {
+                tvDisplay.setText("Error");
+            }
         } catch (Exception e) {
             tvDisplay.setText("Error");
         }
