@@ -1,17 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="bg_grey">#121212</color>
-    <color name="display_bg">#1E1E1E</color>
-    <color name="btn_function">#2C3E50</color>
-    <color name="btn_operator">#3E3E00</color>
-    <color name="btn_equals">#1B5E20</color>
-    <color name="btn_clear">#4A1010</color>
-    <color name="btn_number">#2A2A2A</color>
-
-    <color name="text_main">#E0E0E0</color>
-    <color name="text_secondary">#B0B0B0</color>
-    <color name="text_function">#81D4FA</color>
-    <color name="text_operator">#FFD54F</color>
-    <color name="text_clear">#EF9A9A</color>
-    <color name="text_equals">#A5D6A7</color>
+    <color name="bg_grey">@color/bg_grey_dark</color>
+    <color name="display_bg">@color/display_bg_dark</color>
+    <color name="btn_function">@color/btn_function_dark</color>
+    <color name="btn_operator">@color/btn_operator_dark</color>
+    <color name="btn_equals">@color/btn_equals_dark</color>
+    <color name="btn_clear">@color/btn_clear_dark</color>
+    <color name="btn_number">@color/btn_number_dark</color>
+    <color name="text_dark">@color/text_light</color>
+    <color name="text_secondary">#AAAAAA</color>
 </resources>

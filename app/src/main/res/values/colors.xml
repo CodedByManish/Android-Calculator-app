@@ -7,11 +7,17 @@
     <color name="btn_equals">#DDF2E2</color>
     <color name="btn_clear">#FBE1E4</color>
     <color name="btn_number">#E9ECEF</color>
-
-    <color name="text_main">#34495E</color>
+    <color name="text_dark">#34495E</color>
     <color name="text_secondary">#666666</color>
-    <color name="text_function">#0C5460</color>
-    <color name="text_operator">#856404</color>
-    <color name="text_clear">#721C24</color>
-    <color name="text_equals">#155724</color>
+
+    <color name="bg_grey_dark">#121212</color>
+    <color name="display_bg_dark">#1E1E1E</color>
+
+    <color name="btn_function_dark">#1A3A3E</color>
+    <color name="btn_operator_dark">#3E3924</color>
+    <color name="btn_equals_dark">#213325</color>
+    <color name="btn_clear_dark">#3D1F22</color>
+    <color name="btn_number_dark">#2C2C2C</color>
+
+    <color name="text_light">#E0E4E8</color>
 </resources>
