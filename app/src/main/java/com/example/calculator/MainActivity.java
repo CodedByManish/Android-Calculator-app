@@ -2,6 +2,7 @@ package com.example.calculator;
 
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.TextWatcher; // Added
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -29,9 +30,25 @@ public class MainActivity extends AppCompatActivity {
         etEquation.setShowSoftInputOnFocus(false);
 
         SwitchMaterial modeToggle = findViewById(R.id.modeToggle);
-        modeToggle.setOnCheckedChangeListener((v, isChecked) -> isRadianMode = isChecked);
+        modeToggle.setOnCheckedChangeListener((v, isChecked) -> {
+            isRadianMode = isChecked;
+            doRealTimeEval(); // Re-evaluate when toggling Deg/Rad
+        });
 
-        // Standard Numbers and Basic Operators
+        // --- Real-Time Output Logic ---
+        etEquation.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                doRealTimeEval();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
         int[] ids = {R.id.btn0, R.id.btn1, R.id.btn2, R.id.btn3, R.id.btn4, R.id.btn5, R.id.btn6, R.id.btn7, R.id.btn8, R.id.btn9,
                 R.id.btnDot, R.id.btnOpen, R.id.btnClose, R.id.btnPlus, R.id.btnMinus, R.id.btnPower, R.id.btnFact};
         for (int id : ids) {
@@ -59,12 +76,14 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.btnBack).setOnClickListener(v -> {
             int cursorPosition = etEquation.getSelectionStart();
             if (cursorPosition > 0) {
-                Editable text = etEquation.getText();
-                text.delete(cursorPosition - 1, cursorPosition);
+                etEquation.getText().delete(cursorPosition - 1, cursorPosition);
             }
         });
 
-        findViewById(R.id.btnEquals).setOnClickListener(v -> calculate());
+        findViewById(R.id.btnEquals).setOnClickListener(v -> {
+            calculate();
+            shouldClearHeader = true;
+        });
     }
 
     private void setupFunc(int id, String text) {
@@ -75,9 +94,7 @@ public class MainActivity extends AppCompatActivity {
         String currentResult = tvDisplay.getText().toString();
 
         if (shouldClearHeader) {
-            // Check if the input is an operator or a number/function
             boolean isOperator = strToAdd.matches("[\\+\\-\\*/\\^!×÷]");
-
             if (isOperator && !currentResult.equals("Error")) {
                 etEquation.setText(currentResult);
                 etEquation.setSelection(etEquation.getText().length());
@@ -88,27 +105,24 @@ public class MainActivity extends AppCompatActivity {
         }
 
         int cursorPosition = etEquation.getSelectionStart();
-        Editable editable = etEquation.getText();
+        String visualStr = strToAdd.replace("*", "×").replace("/", "÷")
+                .replace("log10(", "log(").replace("sqrt(", "√(");
 
-        String visualStr = strToAdd
-                .replace("*", "×")
-                .replace("/", "÷")
-                .replace("log10(", "log(")
-                .replace("sqrt(", "√(");
-
-        editable.insert(cursorPosition, visualStr);
+        etEquation.getText().insert(cursorPosition, visualStr);
     }
 
-    private void calculate() {
+    // Core evaluation logic used by both real-time and equals button
+    private void doRealTimeEval() {
+        String input = etEquation.getText().toString();
+        if (input.isEmpty()) {
+            tvDisplay.setText("0");
+            return;
+        }
+
         try {
-            String formula = etEquation.getText().toString()
-                    .replace("×", "*")
-                    .replace("÷", "/")
-                    .replace("log(", "log10(")
-                    .replace("ln(", "log")
-                    .replace("√(", "sqrt(")
-                    .replace("π", "pi")
-                    .replace("e", "e");
+            String formula = input.replace("×", "*").replace("÷", "/")
+                    .replace("log(", "log10(").replace("ln(", "log")
+                    .replace("√(", "sqrt(").replace("π", "pi").replace("e", "e");
 
             if (!isRadianMode) {
                 formula = formula.replace("sin(", "sin(pi/180*")
@@ -127,17 +141,24 @@ public class MainActivity extends AppCompatActivity {
                 }
             };
 
-            Expression e = new ExpressionBuilder(formula)
-                    .operator(factorial)
-                    .build();
-
+            Expression e = new ExpressionBuilder(formula).operator(factorial).build();
             double res = e.evaluate();
             tvDisplay.setText(formatResult(res));
-            shouldClearHeader = true;
+        } catch (Exception e) {
+            // While typing, we don't show "Error" unless it's a final calculation
+            // This keeps the UI clean while the user is mid-sentence
+        }
+    }
 
+    private void calculate() {
+        // Final calculation: if it's currently an error, show it
+        String currentInput = etEquation.getText().toString();
+        if (currentInput.isEmpty()) return;
+
+        try {
+            doRealTimeEval();
         } catch (Exception e) {
             tvDisplay.setText("Error");
-            shouldClearHeader = true; // Still clear on error
         }
     }
 
@@ -146,7 +167,6 @@ public class MainActivity extends AppCompatActivity {
         if (Math.abs(res) >= 1_000_000_000L || (Math.abs(res) < 0.0000001 && res != 0)) {
             return new DecimalFormat("0.######E0").format(res);
         }
-        DecimalFormat df = new DecimalFormat("0.##########");
-        return df.format(res);
+        return new DecimalFormat("0.#######").format(res);
     }
 }
