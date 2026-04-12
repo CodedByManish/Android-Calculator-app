@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
-import net.objecthunter.exp4j.function.Function;
+import net.objecthunter.exp4j.operator.Operator;
 import java.text.DecimalFormat;
 
 public class MainActivity extends AppCompatActivity {
@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
         modeToggle.setOnCheckedChangeListener((v, isChecked) -> isRadianMode = isChecked);
 
         int[] ids = {R.id.btn0, R.id.btn1, R.id.btn2, R.id.btn3, R.id.btn4, R.id.btn5, R.id.btn6, R.id.btn7, R.id.btn8, R.id.btn9,
-                R.id.btnDot, R.id.btnOpen, R.id.btnClose, R.id.btnPlus, R.id.btnMinus, R.id.btnPower};
+                R.id.btnDot, R.id.btnOpen, R.id.btnClose, R.id.btnPlus, R.id.btnMinus, R.id.btnPower, R.id.btnFact}; // btnFact back here
         for (int id : ids) {
             findViewById(id).setOnClickListener(v -> insertText(((Button)v).getText().toString()));
         }
@@ -43,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
         setupFunc(R.id.btnLog, "log10(");
         setupFunc(R.id.btnLn, "ln(");
         setupFunc(R.id.btnRoot, "sqrt(");
-        setupFunc(R.id.btnFact, "fact("); // Changed to function style for exp4j
 
         findViewById(R.id.btnMultiply).setOnClickListener(v -> insertText("*"));
         findViewById(R.id.btnDivide).setOnClickListener(v -> insertText("/"));
@@ -84,8 +83,7 @@ public class MainActivity extends AppCompatActivity {
                 .replace("*", "×")
                 .replace("/", "÷")
                 .replace("log10(", "log(")
-                .replace("sqrt(", "√(")
-                .replace("fact(", "!("); // Show ! visually
+                .replace("sqrt(", "√(");
 
         editable.insert(cursorPosition, visualStr);
     }
@@ -98,7 +96,6 @@ public class MainActivity extends AppCompatActivity {
                     .replace("log(", "log10(")
                     .replace("ln(", "log")
                     .replace("√(", "sqrt(")
-                    .replace("!(", "fact(") // Logic back to function
                     .replace("π", "pi")
                     .replace("e", "e");
 
@@ -108,20 +105,20 @@ public class MainActivity extends AppCompatActivity {
                         .replace("tan(", "tan(pi/180*");
             }
 
-            // Custom Factorial Function for exp4j
-            Function fact = new Function("fact", 1) {
+            // Create Factorial as a Custom Operator (!)
+            Operator factorial = new Operator("!", 1, true, Operator.PRECEDENCE_POWER + 1) {
                 @Override
                 public double apply(double... args) {
-                    double n = args[0];
-                    if (n < 0) return Double.NaN;
+                    int arg = (int) args[0];
+                    if (arg < 0) throw new IllegalArgumentException("Cannot be negative");
                     double result = 1;
-                    for (int i = 1; i <= n; i++) result *= i;
+                    for (int i = 1; i <= arg; i++) result *= i;
                     return result;
                 }
             };
 
             Expression e = new ExpressionBuilder(formula)
-                    .function(fact)
+                    .operator(factorial)
                     .build();
 
             double res = e.evaluate();
@@ -133,16 +130,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // New method to handle scientific notation and precision
     private String formatResult(double res) {
         if (Double.isInfinite(res) || Double.isNaN(res)) return "Error";
-
-        // If number is larger than 10 digits or very tiny, use scientific notation
         if (Math.abs(res) >= 1_000_000_000L || (Math.abs(res) < 0.0000001 && res != 0)) {
             return new DecimalFormat("0.######E0").format(res);
         }
-
-        // Otherwise, format as standard decimal, removing trailing zeros
         DecimalFormat df = new DecimalFormat("0.##########");
         return df.format(res);
     }
