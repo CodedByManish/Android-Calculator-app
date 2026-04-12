@@ -1,23 +1,27 @@
 package com.example.calculator;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.TextView;
-import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.switchmaterial.SwitchMaterial;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 import net.objecthunter.exp4j.operator.Operator;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
@@ -67,10 +71,10 @@ public class MainActivity extends AppCompatActivity {
         popup.setOnMenuItemClickListener(item -> {
             int id = item.getItemId();
             if (id == R.id.action_history) {
-                Toast.makeText(this, "History clicked", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(this, HistoryActivity.class));
                 return true;
             } else if (id == R.id.action_settings) {
-                Toast.makeText(this, "Settings clicked", Toast.LENGTH_SHORT).show();
+                // Settings logic here
                 return true;
             }
             return false;
@@ -145,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
         } catch (ArithmeticException e) {
             tvDisplay.setText("Cannot divide by 0");
         } catch (Exception e) {
-            tvDisplay.setText(""); // Keep blank during real-time typing errors
+            tvDisplay.setText("");
         }
     }
 
@@ -160,6 +164,26 @@ public class MainActivity extends AppCompatActivity {
         DecimalFormat df = (DecimalFormat) NumberFormat.getNumberInstance(Locale.US);
         df.applyPattern("#,###.#######");
         return df.format(res);
+    }
+
+    private void saveToHistory(String equation, String result) {
+        if (result.isEmpty() || result.contains("Error") || result.contains("divide")) return;
+
+        SharedPreferences sp = getSharedPreferences("calc_prefs", MODE_PRIVATE);
+        Gson gson = new Gson();
+
+        String json = sp.getString("history", null);
+        List<String[]> historyList;
+        if (json == null) {
+            historyList = new ArrayList<>();
+        } else {
+            historyList = gson.fromJson(json, new TypeToken<List<String[]>>(){}.getType());
+        }
+
+        historyList.add(0, new String[]{equation, result});
+        if (historyList.size() > 50) historyList.remove(50);
+
+        sp.edit().putString("history", gson.toJson(historyList)).apply();
     }
 
     private void setupButtons() {
@@ -196,18 +220,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void calculate() {
+        String equation = etEquation.getText().toString();
         String result = tvDisplay.getText().toString();
+
         if (result.isEmpty()) return;
 
         if (result.equals("Cannot divide by 0") || result.equals("Expression Error")) {
-            // Keep the error in the display but don't move it up
             shouldClearHeader = true;
         } else {
-            // Move result to equation and clear display
+            saveToHistory(equation, result);
             etEquation.setText(result);
             etEquation.setSelection(etEquation.getText().length());
             tvDisplay.setText("");
-            shouldClearHeader = false; // Reset so user can keep typing from the result
+            shouldClearHeader = false;
         }
     }
 }
