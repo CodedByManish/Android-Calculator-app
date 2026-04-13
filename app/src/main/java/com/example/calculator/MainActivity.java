@@ -204,15 +204,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void insertText(String str) {
-        if (shouldClearHeader) { etEquation.setText(""); shouldClearHeader = false; }
+        if (shouldClearHeader) {
+            etEquation.setText("");
+            shouldClearHeader = false;
+        }
 
         int pos = etEquation.getSelectionStart();
         String currentText = etEquation.getText().toString();
 
-        // Prevents consecutive operators: +, -, ×, ÷, ^
         if (str.matches("[+×÷^\\-]") && pos > 0) {
             char lastChar = currentText.charAt(pos - 1);
-            if (String.valueOf(lastChar).matches("[+×÷^\\-]")) return;
+
+            if (String.valueOf(lastChar).matches("[+×÷^\\-]")) {
+                if (str.equals("-") && lastChar != '-') {
+                    etEquation.getText().insert(pos, str);
+                    return;
+                }
+                etEquation.getText().replace(pos - 1, pos, str);
+                return;
+            }
         }
 
         etEquation.getText().insert(pos, str);
