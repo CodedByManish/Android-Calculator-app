@@ -1,6 +1,7 @@
 package com.example.calculator;
 
 import android.os.Bundle;
+import android.text.Html;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,18 +23,32 @@ public class InfoActivity extends AppCompatActivity {
 
         if ("about".equals(type)) {
             tvTitle.setText("About Calculator");
-            tvContent.setText("Advanced Scientific Calculator v1.0.2\n\n" +
-                    "A high-precision tool designed for students and professionals. " +
-                    "Built with a focus on clean UI and mathematical accuracy.\n\n" +
-                    "Developer: Your Name/Project\n" +
-                    "Build Date: April 2026");
+            String aboutHtml = "<h3>Advanced Calculator v1.0.3</h3>" +
+                    "<p>A precision-focused scientific tool built for the modern Android experience.</p>" +
+                    "<b>Key Technologies:</b>" +
+                    "<ul>" +
+                    "<li><b>exp4j Engine:</b> For high-speed expression parsing.</li>" +
+                    "<li><b>BigDecimal:</b> To ensure financial-grade precision.</li>" +
+                    "<li><b>Material Design 3:</b> For a clean, adaptive UI.</li>" +
+                    "</ul>" +
+                    "<p>Our mission is to provide a reliable, ad-free, and beautiful calculating experience for students, engineers, and scientists.</p>" +
+                    "<br><b>Developer:</b> [Your Name]<br>" +
+                    "<b>Build:</b> Stable Release 2026";
+            tvContent.setText(Html.fromHtml(aboutHtml, Html.FROM_HTML_MODE_COMPACT));
+
         } else if ("privacy".equals(type)) {
             tvTitle.setText("Privacy Policy");
-            tvContent.setText("Privacy Policy\n\n" +
-                    "This calculator does not collect, store, or share any personal user data.\n\n" +
-                    "1. Local Storage: Your calculation history is stored locally on your device only.\n" +
-                    "2. Permissions: No internet or contact permissions are required.\n" +
-                    "3. Security: We do not track your calculations.");
+            String privacyHtml = "<h3>Your Privacy Matters</h3>" +
+                    "<p>We believe that your data belongs to you. This app is designed with a <b>Zero-Data Collection</b> philosophy.</p>" +
+                    "<b>1. No Data Tracking</b><br>" +
+                    "We do not track your calculations, location, or device ID. Everything stays on your phone.<br><br>" +
+                    "<b>2. Local Storage</b><br>" +
+                    "Your history is stored in a local private database. It is never uploaded to any server.<br><br>" +
+                    "<b>3. Offline First</b><br>" +
+                    "This app works 100% offline. It does not require internet permissions to function.<br><br>" +
+                    "<b>4. Permissions</b><br>" +
+                    "We only use standard system permissions (like Haptic Feedback) to improve your user experience.";
+            tvContent.setText(Html.fromHtml(privacyHtml, Html.FROM_HTML_MODE_COMPACT));
         }
     }
 }

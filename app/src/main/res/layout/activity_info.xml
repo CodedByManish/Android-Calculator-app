@@ -9,7 +9,8 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:paddingHorizontal="12dp">
+        android:paddingHorizontal="12dp"
+        android:background="@color/display_bg">
         <ImageButton
             android:id="@+id/btnBackInfo"
             android:layout_width="48dp"
@@ -23,7 +24,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="Info"
+            android:text="Information"
             android:textColor="@color/text_dark"
             android:textSize="18sp"
             android:fontFamily="sans-serif-medium" />
@@ -31,14 +32,43 @@
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="20dp">
-        <TextView
-            android:id="@+id/tvInfoContent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/containerInfo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/text_dark"
-            android:textSize="16sp"
-            android:lineSpacingExtra="4dp" />
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/display_bg"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp">
+
+                <TextView
+                    android:id="@+id/tvInfoContent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="20dp"
+                    android:textColor="@color/text_dark"
+                    android:textSize="15sp"
+                    android:lineSpacingExtra="6dp"
+                    android:fontFamily="sans-serif" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="© 2026 Advanced Calculator Project"
+                android:textAlignment="center"
+                android:layout_marginTop="24dp"
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp" />
+
+        </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 </LinearLayout>
