@@ -77,7 +77,7 @@ A lightweight yet powerful scientific calculator for Android, delivering precise
 
 ## 📦 Releases
 
-👉 Latest Version: [v1.0.4](https://github.com/CodedByManish/Android-Calculator-app/releases/tag/v1.0.4)
+👉 Latest Version: [v1.0.4](https://github.com/CodedByManish/Android-Calculator-app/releases/tag/v1.0.5)
 
 Download APK from the Releases section and install on Android devices.
 
