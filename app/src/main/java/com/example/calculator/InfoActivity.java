@@ -24,7 +24,7 @@ public class InfoActivity extends AppCompatActivity {
         if ("about".equals(type)) {
             tvTitle.setText("About Calculator");
             String aboutHtml =
-                    "<h2>Advanced Calculator v1.0.4</h2><br>" +
+                    "<h2>Advanced Calculator v1.0.5</h2><br>" +
                             "<p>A fast, precise, and modern scientific calculator designed for Android users who value simplicity and accuracy.</p><br>" +
 
                             "<b>Core Features</b><br>" +
