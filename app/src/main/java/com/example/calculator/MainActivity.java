@@ -75,11 +75,7 @@ public class MainActivity extends AppCompatActivity {
         setupButtons();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        applyScreenSetting(); // Re-apply if user changed it in Settings
-    }
+    @Override protected void onResume() { super.onResume(); applyScreenSetting(); }
 
     private void applyScreenSetting() {
         if (sp.getBoolean("screen_on", false)) {
@@ -90,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void handleVibration() {
+        // We still keep the logic here, but the setting toggle will be removed as requested
         if (sp.getBoolean("vibration", true)) {
             etEquation.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
         }
@@ -117,15 +114,10 @@ public class MainActivity extends AppCompatActivity {
         String original = s.toString().replace(",", "");
         StringBuilder formatted = new StringBuilder();
         String[] parts = original.split("(?<=[^0-9.])|(?=[^0-9.])");
-
         for (String part : parts) {
-            if (part.matches("[0-9.]+")) {
-                formatted.append(formatNumberWithCommas(part));
-            } else {
-                formatted.append(part);
-            }
+            if (part.matches("[0-9.]+")) { formatted.append(formatNumberWithCommas(part)); }
+            else { formatted.append(part); }
         }
-
         int cursorPosition = etEquation.getSelectionStart();
         int oldLen = s.length();
         etEquation.setText(formatted.toString());
@@ -139,145 +131,122 @@ public class MainActivity extends AppCompatActivity {
             if (number.contains(".")) {
                 String[] split = number.split("\\.");
                 BigDecimal integerPart = new BigDecimal(split[0]);
-                String formattedInt = NumberFormat.getNumberInstance(Locale.US).format(integerPart);
-                return formattedInt + "." + (split.length > 1 ? split[1] : "");
+                return NumberFormat.getNumberInstance(Locale.US).format(integerPart) + "." + (split.length > 1 ? split[1] : "");
             } else {
                 return NumberFormat.getNumberInstance(Locale.US).format(new BigDecimal(number));
             }
-        } catch (Exception e) {
-            return number;
-        }
+        } catch (Exception e) { return number; }
     }
 
     private void doRealTimeEval() {
         String input = etEquation.getText().toString().replace(",", "");
         if (input.isEmpty()) { tvDisplay.setText(""); return; }
-
         try {
-            String formula = input.replace("×", "*").replace("÷", "/")
-                    .replace("log(", "log10(").replace("ln(", "log")
-                    .replace("√(", "sqrt(").replace("π", "pi").replace("e", "e");
-
-            if (!isRadianMode) {
-                formula = formula.replace("sin(", "sin(pi/180*")
-                        .replace("cos(", "cos(pi/180*")
-                        .replace("tan(", "tan(pi/180*");
-            }
-
-            Operator factorial = new Operator("!", 1, true, Operator.PRECEDENCE_POWER + 1) {
-                @Override public double apply(double... args) {
-                    long arg = (long) args[0];
-                    double res = 1;
-                    for (int i = 1; i <= arg; i++) res *= i;
-                    return res;
-                }
-            };
-
-            Expression e = new ExpressionBuilder(formula).operator(factorial).build();
-            double res = e.evaluate();
-            tvDisplay.setText(formatResult(res));
-        } catch (ArithmeticException e) {
-            tvDisplay.setText("Cannot divide by 0");
+            tvDisplay.setText(evaluateExpression(input));
         } catch (Exception e) {
-            tvDisplay.setText("");
+            tvDisplay.setText(""); // Keep clean during typing
         }
+    }
+
+    private String evaluateExpression(String input) throws Exception {
+        String formula = input.replace("×", "*").replace("÷", "/")
+                .replace("log(", "log10(").replace("ln(", "log")
+                .replace("√(", "sqrt(").replace("π", "pi").replace("e", "e");
+        if (!isRadianMode) {
+            formula = formula.replace("sin(", "sin(pi/180*")
+                    .replace("cos(", "cos(pi/180*")
+                    .replace("tan(", "tan(pi/180*");
+        }
+        Operator factorial = new Operator("!", 1, true, Operator.PRECEDENCE_POWER + 1) {
+            @Override public double apply(double... args) {
+                long arg = (long) args[0];
+                double res = 1;
+                for (int i = 1; i <= arg; i++) res *= i;
+                return res;
+            }
+        };
+        Expression e = new ExpressionBuilder(formula).operator(factorial).build();
+        return formatResult(e.evaluate());
     }
 
     private String formatResult(double res) {
         if (Double.isInfinite(res)) return "Cannot divide by 0";
         if (Double.isNaN(res)) return "Expression Error";
-
         if (Math.abs(res) >= 1_000_000_000_000_000L || (Math.abs(res) < 0.000001 && res != 0)) {
             return new DecimalFormat("0.######E0").format(res);
         }
-
         DecimalFormat df = (DecimalFormat) NumberFormat.getNumberInstance(Locale.US);
         df.applyPattern("#,###.#######");
         return df.format(res);
     }
 
-    private void saveToHistory(String equation, String result) {
-        if (result.isEmpty() || result.contains("Error") || result.contains("divide")) return;
-
-        Gson gson = new Gson();
-        String json = sp.getString("history", null);
-        List<String[]> historyList;
-        if (json == null) {
-            historyList = new ArrayList<>();
-        } else {
-            historyList = gson.fromJson(json, new TypeToken<List<String[]>>(){}.getType());
-        }
-
-        historyList.add(0, new String[]{equation, result});
-        if (historyList.size() > 50) historyList.remove(50);
-
-        sp.edit().putString("history", gson.toJson(historyList)).apply();
-    }
-
     private void setupButtons() {
         int[] ids = {R.id.btn0, R.id.btn1, R.id.btn2, R.id.btn3, R.id.btn4, R.id.btn5, R.id.btn6, R.id.btn7, R.id.btn8, R.id.btn9,
                 R.id.btnDot, R.id.btnOpen, R.id.btnClose, R.id.btnPlus, R.id.btnMinus, R.id.btnPower, R.id.btnFact};
-
-        for (int id : ids) {
-            findViewById(id).setOnClickListener(v -> {
-                handleVibration();
-                insertText(((Button)v).getText().toString());
-            });
-        }
-
+        for (int id : ids) findViewById(id).setOnClickListener(v -> { handleVibration(); insertText(((Button)v).getText().toString()); });
         findViewById(R.id.btnSin).setOnClickListener(v -> { handleVibration(); insertText("sin("); });
         findViewById(R.id.btnCos).setOnClickListener(v -> { handleVibration(); insertText("cos("); });
         findViewById(R.id.btnTan).setOnClickListener(v -> { handleVibration(); insertText("tan("); });
-        findViewById(R.id.btnLog).setOnClickListener(v -> { handleVibration(); insertText("log10("); });
+        findViewById(R.id.btnLog).setOnClickListener(v -> { handleVibration(); insertText("log("); });
         findViewById(R.id.btnLn).setOnClickListener(v -> { handleVibration(); insertText("ln("); });
-        findViewById(R.id.btnRoot).setOnClickListener(v -> { handleVibration(); insertText("sqrt("); });
-        findViewById(R.id.btnMultiply).setOnClickListener(v -> { handleVibration(); insertText("*"); });
-        findViewById(R.id.btnDivide).setOnClickListener(v -> { handleVibration(); insertText("/"); });
+        findViewById(R.id.btnRoot).setOnClickListener(v -> { handleVibration(); insertText("√("); });
+        findViewById(R.id.btnMultiply).setOnClickListener(v -> { handleVibration(); insertText("×"); });
+        findViewById(R.id.btnDivide).setOnClickListener(v -> { handleVibration(); insertText("÷"); });
         findViewById(R.id.btnPi).setOnClickListener(v -> { handleVibration(); insertText("π"); });
         findViewById(R.id.btnE).setOnClickListener(v -> { handleVibration(); insertText("e"); });
-
-        findViewById(R.id.btnAC).setOnClickListener(v -> {
-            handleVibration();
-            etEquation.setText("");
-            tvDisplay.setText("");
-        });
-
+        findViewById(R.id.btnAC).setOnClickListener(v -> { handleVibration(); etEquation.setText(""); tvDisplay.setText(""); });
         findViewById(R.id.btnBack).setOnClickListener(v -> {
             handleVibration();
             int pos = etEquation.getSelectionStart();
             if (pos > 0) etEquation.getText().delete(pos - 1, pos);
         });
-
-        findViewById(R.id.btnEquals).setOnClickListener(v -> {
-            handleVibration();
-            calculate();
-        });
+        findViewById(R.id.btnEquals).setOnClickListener(v -> { handleVibration(); calculate(); });
     }
 
     private void insertText(String str) {
-        if (shouldClearHeader) {
-            etEquation.setText("");
-            shouldClearHeader = false;
-        }
+        if (shouldClearHeader) { etEquation.setText(""); shouldClearHeader = false; }
+
         int pos = etEquation.getSelectionStart();
-        String visual = str.replace("*", "×").replace("/", "÷").replace("log10(", "log(").replace("sqrt(", "√(");
-        etEquation.getText().insert(pos, visual);
+        String currentText = etEquation.getText().toString();
+
+        // Prevents consecutive operators: +, -, ×, ÷, ^
+        if (str.matches("[+×÷^\\-]") && pos > 0) {
+            char lastChar = currentText.charAt(pos - 1);
+            if (String.valueOf(lastChar).matches("[+×÷^\\-]")) return;
+        }
+
+        etEquation.getText().insert(pos, str);
     }
 
     private void calculate() {
-        String equation = etEquation.getText().toString();
-        String result = tvDisplay.getText().toString();
+        String input = etEquation.getText().toString().replace(",", "");
+        if (input.isEmpty()) return;
 
-        if (result.isEmpty()) return;
-
-        if (result.equals("Cannot divide by 0") || result.equals("Expression Error")) {
+        try {
+            String resStr = evaluateExpression(input);
+            if (resStr.equals("Cannot divide by 0")) {
+                tvDisplay.setText(resStr);
+                shouldClearHeader = true;
+            } else {
+                saveToHistory(etEquation.getText().toString(), resStr);
+                etEquation.setText(resStr);
+                etEquation.setSelection(etEquation.getText().length());
+                tvDisplay.setText("");
+                shouldClearHeader = false;
+            }
+        } catch (Exception e) {
+            tvDisplay.setText("Expression Error");
             shouldClearHeader = true;
-        } else {
-            saveToHistory(equation, result);
-            etEquation.setText(result);
-            etEquation.setSelection(etEquation.getText().length());
-            tvDisplay.setText("");
-            shouldClearHeader = false;
         }
+    }
+
+    private void saveToHistory(String eq, String res) {
+        if (res.contains("Error") || res.contains("divide")) return;
+        Gson gson = new Gson();
+        String json = sp.getString("history", null);
+        List<String[]> list = (json == null) ? new ArrayList<>() : gson.fromJson(json, new TypeToken<List<String[]>>(){}.getType());
+        list.add(0, new String[]{eq, res});
+        if (list.size() > 50) list.remove(50);
+        sp.edit().putString("history", gson.toJson(list)).apply();
     }
 }
