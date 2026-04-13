@@ -11,17 +11,36 @@ A lightweight yet powerful scientific calculator for Android, delivering precise
 
 ## 📸 Screenshots
 
+### 🌗 Light & Dark Modes + Features
+
 <p align="center">
-  <img src="screenshots/main_light.png" width="180"/> &nbsp;
-  <img src="screenshots/main_dark.png" width="180"/> &nbsp;
-  <img src="screenshots/history_light.png" width="180"/> &nbsp;
-  <img src="screenshots/history_dark.png" width="180"/> &nbsp;
-  <img src="screenshots/settings_light.png" width="180"/> &nbsp;
-  <img src="screenshots/settings_dark.png" width="180"/>
+  <img src="screenshots/main_light.png" width="170"/>
+  &nbsp;&nbsp;
+  <img src="screenshots/main_dark.png" width="170"/>
+  &nbsp;&nbsp;
+  <img src="screenshots/history_light.png" width="170"/>
+  &nbsp;&nbsp;
+  <img src="screenshots/history_dark.png" width="170"/>
 </p>
 
 <p align="center">
-  <b>Main Light</b> &nbsp;&nbsp; <b>Main Dark</b> &nbsp;&nbsp; <b>History Light</b> &nbsp;&nbsp; <b>History Dark</b> &nbsp;&nbsp; <b>Settings Light</b> &nbsp;&nbsp; <b>Settings Dark</b>
+  <b>Main (Light)</b> &nbsp;&nbsp;&nbsp;
+  <b>Main (Dark)</b> &nbsp;&nbsp;&nbsp;
+  <b>History (Light)</b> &nbsp;&nbsp;&nbsp;
+  <b>History (Dark)</b>
+</p>
+
+<br/>
+
+<p align="center">
+  <img src="screenshots/settings_light.png" width="170"/>
+  &nbsp;&nbsp;
+  <img src="screenshots/settings_dark.png" width="170"/>
+</p>
+
+<p align="center">
+  <b>Settings (Light)</b> &nbsp;&nbsp;&nbsp;
+  <b>Settings (Dark)</b>
 </p>
 
 ---
