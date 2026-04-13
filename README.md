@@ -12,12 +12,16 @@ A lightweight yet powerful scientific calculator for Android, delivering precise
 ## 📸 Screenshots
 
 <p align="center">
-  &nbsp;&nbsp;&nbsp;<img src="screenshots/light.png" width="220"/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="screenshots/dark.png" width="220"/>
+  <img src="screenshots/main_light.png" width="180"/> &nbsp;
+  <img src="screenshots/main_dark.png" width="180"/> &nbsp;
+  <img src="screenshots/history_light.png" width="180"/> &nbsp;
+  <img src="screenshots/history_dark.png" width="180"/> &nbsp;
+  <img src="screenshots/settings_light.png" width="180"/> &nbsp;
+  <img src="screenshots/settings_dark.png" width="180"/>
 </p>
 
 <p align="center">
-  <b>Light Mode</b> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Dark Mode</b>
+  <b>Main Light</b> &nbsp;&nbsp; <b>Main Dark</b> &nbsp;&nbsp; <b>History Light</b> &nbsp;&nbsp; <b>History Dark</b> &nbsp;&nbsp; <b>Settings Light</b> &nbsp;&nbsp; <b>Settings Dark</b>
 </p>
 
 ---
@@ -91,6 +95,6 @@ This project is licensed under the MIT License.
 ## ⭐ Support
 
 If you like this project:
-- ⭐ Star the repository  
-- 🍴 Fork it  
+- ⭐ Star the repository
+- 🍴 Fork it
 - 🚀 Share it with others  
