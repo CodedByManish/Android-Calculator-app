@@ -5,7 +5,7 @@
 ![Material3](https://img.shields.io/badge/UI-Material%203-757575?style=for-the-badge&logo=materialdesign)
 ![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)
 
-A fast, clean, and high-precision **scientific calculator for Android**, built with smart input handling and a smooth Material 3 UI.
+A lightweight yet powerful scientific calculator for Android, delivering precise results with smart input logic and a clean Material 3 interface.
 
 ---
 
