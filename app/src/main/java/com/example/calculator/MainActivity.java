@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.HapticFeedbackConstants;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -31,21 +33,29 @@ public class MainActivity extends AppCompatActivity {
     private boolean isRadianMode = false;
     private boolean shouldClearHeader = false;
     private boolean isFormatting = false;
+    private SharedPreferences sp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        sp = getSharedPreferences("calc_prefs", MODE_PRIVATE);
+        applyScreenSetting();
+
         tvDisplay = findViewById(R.id.tvDisplay);
         etEquation = findViewById(R.id.etEquation);
         etEquation.setShowSoftInputOnFocus(false);
 
         ImageButton btnMenu = findViewById(R.id.btnMenu);
-        btnMenu.setOnClickListener(v -> showPopupMenu(v));
+        btnMenu.setOnClickListener(v -> {
+            handleVibration();
+            showPopupMenu(v);
+        });
 
         SwitchMaterial modeToggle = findViewById(R.id.modeToggle);
         modeToggle.setOnCheckedChangeListener((v, isChecked) -> {
+            handleVibration();
             isRadianMode = isChecked;
             doRealTimeEval();
         });
@@ -65,6 +75,26 @@ public class MainActivity extends AppCompatActivity {
         setupButtons();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        applyScreenSetting(); // Re-apply if user changed it in Settings
+    }
+
+    private void applyScreenSetting() {
+        if (sp.getBoolean("screen_on", false)) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        } else {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        }
+    }
+
+    private void handleVibration() {
+        if (sp.getBoolean("vibration", true)) {
+            etEquation.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
+        }
+    }
+
     private void showPopupMenu(android.view.View view) {
         PopupMenu popup = new PopupMenu(this, view);
         popup.getMenuInflater().inflate(R.menu.main_menu, popup.getMenu());
@@ -74,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(this, HistoryActivity.class));
                 return true;
             } else if (id == R.id.action_settings) {
+                startActivity(new Intent(this, SettingsActivity.class));
                 return true;
             }
             return false;
@@ -168,9 +199,7 @@ public class MainActivity extends AppCompatActivity {
     private void saveToHistory(String equation, String result) {
         if (result.isEmpty() || result.contains("Error") || result.contains("divide")) return;
 
-        SharedPreferences sp = getSharedPreferences("calc_prefs", MODE_PRIVATE);
         Gson gson = new Gson();
-
         String json = sp.getString("history", null);
         List<String[]> historyList;
         if (json == null) {
@@ -188,24 +217,41 @@ public class MainActivity extends AppCompatActivity {
     private void setupButtons() {
         int[] ids = {R.id.btn0, R.id.btn1, R.id.btn2, R.id.btn3, R.id.btn4, R.id.btn5, R.id.btn6, R.id.btn7, R.id.btn8, R.id.btn9,
                 R.id.btnDot, R.id.btnOpen, R.id.btnClose, R.id.btnPlus, R.id.btnMinus, R.id.btnPower, R.id.btnFact};
-        for (int id : ids) findViewById(id).setOnClickListener(v -> insertText(((Button)v).getText().toString()));
 
-        findViewById(R.id.btnSin).setOnClickListener(v -> insertText("sin("));
-        findViewById(R.id.btnCos).setOnClickListener(v -> insertText("cos("));
-        findViewById(R.id.btnTan).setOnClickListener(v -> insertText("tan("));
-        findViewById(R.id.btnLog).setOnClickListener(v -> insertText("log10("));
-        findViewById(R.id.btnLn).setOnClickListener(v -> insertText("ln("));
-        findViewById(R.id.btnRoot).setOnClickListener(v -> insertText("sqrt("));
-        findViewById(R.id.btnMultiply).setOnClickListener(v -> insertText("*"));
-        findViewById(R.id.btnDivide).setOnClickListener(v -> insertText("/"));
-        findViewById(R.id.btnPi).setOnClickListener(v -> insertText("π"));
-        findViewById(R.id.btnE).setOnClickListener(v -> insertText("e"));
-        findViewById(R.id.btnAC).setOnClickListener(v -> { etEquation.setText(""); tvDisplay.setText(""); });
+        for (int id : ids) {
+            findViewById(id).setOnClickListener(v -> {
+                handleVibration();
+                insertText(((Button)v).getText().toString());
+            });
+        }
+
+        findViewById(R.id.btnSin).setOnClickListener(v -> { handleVibration(); insertText("sin("); });
+        findViewById(R.id.btnCos).setOnClickListener(v -> { handleVibration(); insertText("cos("); });
+        findViewById(R.id.btnTan).setOnClickListener(v -> { handleVibration(); insertText("tan("); });
+        findViewById(R.id.btnLog).setOnClickListener(v -> { handleVibration(); insertText("log10("); });
+        findViewById(R.id.btnLn).setOnClickListener(v -> { handleVibration(); insertText("ln("); });
+        findViewById(R.id.btnRoot).setOnClickListener(v -> { handleVibration(); insertText("sqrt("); });
+        findViewById(R.id.btnMultiply).setOnClickListener(v -> { handleVibration(); insertText("*"); });
+        findViewById(R.id.btnDivide).setOnClickListener(v -> { handleVibration(); insertText("/"); });
+        findViewById(R.id.btnPi).setOnClickListener(v -> { handleVibration(); insertText("π"); });
+        findViewById(R.id.btnE).setOnClickListener(v -> { handleVibration(); insertText("e"); });
+
+        findViewById(R.id.btnAC).setOnClickListener(v -> {
+            handleVibration();
+            etEquation.setText("");
+            tvDisplay.setText("");
+        });
+
         findViewById(R.id.btnBack).setOnClickListener(v -> {
+            handleVibration();
             int pos = etEquation.getSelectionStart();
             if (pos > 0) etEquation.getText().delete(pos - 1, pos);
         });
-        findViewById(R.id.btnEquals).setOnClickListener(v -> calculate());
+
+        findViewById(R.id.btnEquals).setOnClickListener(v -> {
+            handleVibration();
+            calculate();
+        });
     }
 
     private void insertText(String str) {
