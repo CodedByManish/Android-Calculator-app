@@ -1,69 +1,96 @@
-## 📱 Android Calculator
+# 📱 Advanced Scientific Calculator
 
-A sleek, minimalist, and high-performance calculator built with **Java** and **Material Design 3**. This app features a clean "Light-White" aesthetic with a responsive grid layout designed for both phones and tablets.
+![Android](https://img.shields.io/badge/Platform-Android-3DDC84?style=for-the-badge&logo=android)
+![Java](https://img.shields.io/badge/Language-Java-ED8B00?style=for-the-badge&logo=openjdk)
+![Material3](https://img.shields.io/badge/UI-Material%203-757575?style=for-the-badge&logo=materialdesign)
+![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)
 
----
-
-### ✨ Features
-* **Modern UI/UX**: Stylish rounded buttons (16dp radius) and a floating CardView display.
-* **Intuitive Layout**: Balanced 4-column grid with high-contrast functional buttons.
-* **Smart Logic**: Handles addition, subtraction, multiplication, and division with error handling (no crashing on division by zero!).
-* **Precision**: Automatically removes trailing decimals for whole numbers to keep the screen neat.
-* **Responsive**: Optimized for various screen sizes using `GridLayout` and `layout_columnWeight`.
+A fast, clean, and high-precision **scientific calculator for Android**, built with smart input handling and a smooth Material 3 UI.
 
 ---
 
-### 🎨 Visual Showcase
-| **Element** | **Colour** | **Style** |
-| :--- | :--- | :--- |
-| **Numbers** | Grayish White (`#E0E0E0`) | Rounded, Bold Text |
-| **Equals** | Vibrant Green (`#4CAF50`) | Primary Action |
-| **Backspace** | Soft Red (`#E53935`) | High Visibility |
-| **Background** | Light White (`#F5F5F5`) | Clean & Professional |
+## 📸 Screenshots
 
----
-
-### 📸 Screenshots
 <p align="center">
-  <img src="screenshots/AndroCalc_v2.png" width="382" height="787" alt="demo"/>
+  &nbsp;&nbsp;&nbsp;<img src="screenshots/light.png" width="220"/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="screenshots/dark.png" width="220"/>
+</p>
+
+<p align="center">
+  <b>Light Mode</b> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Dark Mode</b>
 </p>
 
 ---
 
-### 🛠️ Tech Stack
-* **Language**: Java ☕
-* **IDE**: Android Studio
-* **Architecture**: XML Layouts + Material Components
-* **UI Components**: `CardView`, `GridLayout`, `MaterialButton`
+## ✨ Key Features
+
+### 🧪 Scientific Functions
+- Trigonometry: `sin`, `cos`, `tan` (Degree & Radian mode)
+- Logarithmic: `log`, `ln`
+- Constants: `π`, `e`
+- Supports complex nested expressions
+
+### ⚡ Smart Input Engine
+- Intelligent operator replacement (no duplicate operators)
+- Supports negative numbers (e.g., `2÷-1`)
+- Real-time expression evaluation
+
+### 📜 History System
+- Stores last 50 calculations
+- Tap to reuse previous results
+
+### 🎨 UI & UX
+- Material Design 3 interface
+- Dark & Light theme support
+- Clean and responsive layout
 
 ---
 
-### 🚀 Getting Started
-1. **Clone the repo:**
-   ```bash
-   git clone [https://github.com/CodedByManish/Android-Calculator-app.git](https://github.com/CodedByManish/Android-Calculator-app.git)
-   ```
+## 🛠 Tech Stack
 
-2. **Open in Android Studio**: Select the project folder and let Gradle sync.
-3. **Build APK**: Go to `Build > Build Bundle(s) / APK(s) > Build APK(s)`.
-4. **Run**: Deploy to a virtual device (API 34+ recommended) or a physical Android phone.
+- Java (Android)
+- exp4j (Expression evaluation engine)
+- Gson (History storage)
+- SharedPreferences (Settings)
+- Material Components
 
 ---
 
-### 📂 File Structure
-* **MainActivity.java** - Core calculation logic and button listeners.
-* **activity_main.xml** - The UI structure and responsive grid.
-* **themes.xml** - Custom styles for the rounded, coloured buttons.
-* **AndroidManifest.xml** - App configuration and entry point.
+## 📦 Releases
+
+👉 Latest Version: [v1.0.4](https://github.com/CodedByManish/Android-Calculator-app/releases/tag/v1.0.4)
+
+Download APK from the Releases section and install on Android devices.
 
 ---
 
-### 🤝 Contributing
-I’m always open to corrections or suggestions! If you find a bug or want to suggest a feature:
+## 📊 Version History
 
-1. **Fork** the project.
-2. **Create your Feature Branch** (`git checkout -b feature/NewFeature`).
-3. **Commit your changes** (`git commit -m 'Add NewFeature'`).
-4. **Push to the Branch** (`git push origin feature/NewFeature`).
-5. **Open a Pull Request**.
+| Version | Status | Highlights |
+|--------|--------|------------|
+| v1.0.4 | Stable | UI & content improvements (About & Privacy) |
+| v1.0.3 | Stable | Smart operator logic + Info screens |
+| v1.0.2 | Stable | History system + performance fixes |
+| v1.0.1 | Beta | Initial scientific calculator release |
 
+---
+
+## 👨‍💻 Developer
+
+**Manish Kafle**  
+GitHub: [CodedByManish](https://github.com/CodedByManish)
+
+---
+
+## 📜 License
+
+This project is licensed under the MIT License.
+
+---
+
+## ⭐ Support
+
+If you like this project:
+- ⭐ Star the repository  
+- 🍴 Fork it  
+- 🚀 Share it with others  
