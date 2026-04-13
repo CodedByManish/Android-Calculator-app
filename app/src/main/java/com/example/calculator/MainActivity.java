@@ -219,10 +219,8 @@ public class MainActivity extends AppCompatActivity {
                 char secondLast = text.charAt(pos - 2);
 
                 if (last == '-' && String.valueOf(secondLast).matches("[+×÷^]")) {
-                    if (!str.equals("-")) {
-                        etEquation.getText().replace(pos - 2, pos, str);
-                        return;
-                    }
+                    etEquation.getText().replace(pos - 2, pos, str);
+                    return;
                 }
             }
 
