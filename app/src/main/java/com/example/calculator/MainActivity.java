@@ -210,10 +210,23 @@ public class MainActivity extends AppCompatActivity {
         }
 
         int pos = etEquation.getSelectionStart();
-        String currentText = etEquation.getText().toString();
+        String text = etEquation.getText().toString();
 
         if (str.matches("[+×÷^\\-]") && pos > 0) {
-            char lastChar = currentText.charAt(pos - 1);
+
+            if (pos >= 2) {
+                char last = text.charAt(pos - 1);
+                char secondLast = text.charAt(pos - 2);
+
+                if (last == '-' && String.valueOf(secondLast).matches("[+×÷^]")) {
+                    if (!str.equals("-")) {
+                        etEquation.getText().replace(pos - 2, pos, str);
+                        return;
+                    }
+                }
+            }
+
+            char lastChar = text.charAt(pos - 1);
 
             if (String.valueOf(lastChar).matches("[+×÷^\\-]")) {
                 if (str.equals("-") && lastChar != '-') {
