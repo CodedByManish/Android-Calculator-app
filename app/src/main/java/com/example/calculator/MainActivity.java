@@ -150,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
 
     private String evaluateExpression(String input) throws Exception {
         String formula = input.replace("×", "*").replace("÷", "/")
-                .replace("log(", "log10(").replace("ln(", "log")
+                .replace("log(", "log10(").replace("ln(", "log(")
                 .replace("√(", "sqrt(").replace("π", "pi").replace("e", "e");
         if (!isRadianMode) {
             formula = formula.replace("sin(", "sin(pi/180*")
