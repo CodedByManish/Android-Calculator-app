@@ -85,12 +85,13 @@ Download APK from the Releases section and install on Android devices.
 
 ## 📊 Version History
 
-| Version | Status | Highlights |
-|--------|--------|------------|
-| v1.0.4 | Stable | UI & content improvements (About & Privacy) |
-| v1.0.3 | Stable | Smart operator logic + Info screens |
-| v1.0.2 | Stable | History system + performance fixes |
-| v1.0.1 | Beta | Initial scientific calculator release |
+| Version | Status | Highlights                                  |
+|---------|--------|---------------------------------------------|
+| v1.0.5  | Stable | Fixed bug of ln                              |
+| v1.0.4  | Stable | UI & content improvements (About & Privacy) |
+| v1.0.3  | Stable | Smart operator logic + Info screens         |
+| v1.0.2  | Stable | History system + performance fixes          |
+| v1.0.1  | Beta   | Initial scientific calculator release       |
 
 ---
 
